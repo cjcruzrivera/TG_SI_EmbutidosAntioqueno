@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework'
+    'rest_framework',
     'api',
 ]
 
@@ -81,8 +81,8 @@ DATABASES = {
         'NAME': 'sieman',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'your_host',  # usually 'localhost' for local development
-        'PORT': 'your_port',  # default port is 5432
+        'HOST': 'localhost',  # usually 'localhost' for local development
+        'PORT': '5432',  # default port is 5432
     }
 }
 
