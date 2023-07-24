@@ -45,7 +45,7 @@ class LoginSerializer(serializers.Serializer):
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = '__all__'
+        exclude = ('password', 'is_superuser', 'is_staff', 'is_active', 'groups', 'user_permissions', 'last_login')  
 
 class MateriaPrimaSerializer(serializers.ModelSerializer):
     class Meta:

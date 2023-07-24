@@ -11,7 +11,7 @@ class LoginView(APIView):
         if serializer.is_valid():
             usuario = serializer.validated_data['usuario']
             # Puedes agregar más información a la respuesta según tus necesidades
-            return Response({'mensaje': 'Inicio de sesión exitoso.', 'usuario_id': usuario.id})
+            return Response({'mensaje': 'Inicio de sesión exitoso.', 'usuario_info': UsuarioSerializer(usuario).data})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
