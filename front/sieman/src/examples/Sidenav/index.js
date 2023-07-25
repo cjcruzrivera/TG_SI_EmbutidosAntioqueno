@@ -47,11 +47,12 @@ import {
   setWhiteSidenav,
 } from "context";
 
-function Sidenav({ color, brand, brandName, routes, role, ...rest }) {
+function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "");
+  const user = controller.user;
 
   let textColor = "white";
 
@@ -87,7 +88,8 @@ function Sidenav({ color, brand, brandName, routes, role, ...rest }) {
   const renderRoutes = routes.map(
     ({ type, name, icon, title, noCollapse, key, href, route, roles }) => {
       let returnValue;
-      if (roles && !roles.includes(role)) return null;
+      console.log(user);
+      if (roles && !roles.includes(user?.rol)) return null;
       if (type === "collapse") {
         returnValue = href ? (
           <Link
@@ -162,7 +164,7 @@ function Sidenav({ color, brand, brandName, routes, role, ...rest }) {
             <Icon sx={{ fontWeight: "bold" }}>close</Icon>
           </MDTypography>
         </MDBox>
-        <MDBox component={NavLink} to="/" display="flex" alignItems="center">
+        <MDBox component={NavLink} to="/" flexDirection="column" justifyContent="center">
           {brand && <MDBox component="img" src={brand} alt="Brand" width="2rem" />}
           <MDBox
             width={!brandName && "100%"}
@@ -170,6 +172,9 @@ function Sidenav({ color, brand, brandName, routes, role, ...rest }) {
           >
             <MDTypography component="h6" variant="button" fontWeight="medium" color={textColor}>
               {brandName}
+            </MDTypography>
+            <MDTypography component="h6" variant="button" fontWeight="medium" color={textColor}>
+              {user.nombre}
             </MDTypography>
           </MDBox>
         </MDBox>
@@ -181,19 +186,6 @@ function Sidenav({ color, brand, brandName, routes, role, ...rest }) {
         }
       />
       <List>{renderRoutes}</List>
-      <MDBox p={2} mt="auto">
-        <MDButton
-          component="a"
-          href="https://www.creative-tim.com/product/material-dashboard-pro-react"
-          target="_blank"
-          rel="noreferrer"
-          variant="gradient"
-          color={sidenavColor}
-          fullWidth
-        >
-          upgrade to pro
-        </MDButton>
-      </MDBox>
     </SidenavRoot>
   );
 }
@@ -210,7 +202,6 @@ Sidenav.propTypes = {
   brand: PropTypes.string,
   brandName: PropTypes.string.isRequired,
   routes: PropTypes.arrayOf(PropTypes.object).isRequired,
-  role: PropTypes.string,
 };
 
 export default Sidenav;

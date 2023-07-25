@@ -28,7 +28,6 @@ import MDBox from "components/MDBox";
 
 // Material Dashboard 2 React example components
 import Sidenav from "examples/Sidenav";
-import Configurator from "examples/Configurator";
 
 // Material Dashboard 2 React themes
 import theme from "assets/theme";
@@ -147,7 +146,6 @@ export default function App() {
             brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
             brandName="EMBUTIDOS ANTIOQUEÑO"
             routes={routes}
-            role={user?.rol}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
           />
