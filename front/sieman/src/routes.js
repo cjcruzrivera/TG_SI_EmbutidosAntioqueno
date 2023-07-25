@@ -37,10 +37,8 @@ Coded by www.creative-tim.com
 
 // Material Dashboard 2 React layouts
 import Tables from "layouts/tables";
-import Billing from "layouts/billing";
-import Notifications from "layouts/notifications";
-import Profile from "layouts/profile";
 
+// Implemented pages
 import Dashboard from "pages/dashboard";
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -54,8 +52,9 @@ const allRoles = [
   "Operario de Empaque",
   "Operario de Ventas",
 ];
-
+// TODO: define routes and roles by module and make parametrizable
 const routes = [
+  //DASHBOARD
   {
     type: "collapse",
     name: "Dashboard",
@@ -65,24 +64,25 @@ const routes = [
     roles: allRoles,
     component: <Dashboard />,
   },
+  //MODULO DE CONFIGURACION
   {
     type: "divider",
-    key: "divider-1",
-    roles: ["Administrador"],
+    key: "divider-config",
+    roles: ["Administrador", "Auxiliar Contable"],
   },
   {
     type: "title",
     key: "title-config",
     title: "Configuracion",
-    roles: ["Administrador"],
+    roles: ["Administrador", "Auxiliar Contable"],
   },
   {
     type: "collapse",
     name: "Usuarios",
-    key: "users",
+    key: "usuarios",
     icon: <Icon fontSize="small">person</Icon>,
     route: "/usuarios",
-    roles: ["Administrador"],
+    roles: ["Administrador", "Auxiliar Contable"],
     component: <Tables />,
   },
   {
@@ -91,7 +91,7 @@ const routes = [
     key: "materias-primas",
     icon: <Icon fontSize="small">bento</Icon>,
     route: "/materias-primas",
-    roles: ["Administrador"],
+    roles: ["Administrador", "Auxiliar Contable"],
     component: <Tables />,
   },
   {
@@ -100,46 +100,206 @@ const routes = [
     key: "productos",
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: "/productos",
-    roles: ["Administrador"],
+    roles: ["Administrador", "Auxiliar Contable"],
+    component: <Tables />,
+  },
+  //MODULO DE COMPRAS
+  {
+    type: "divider",
+    key: "divider-compras",
+    roles: [
+      "Administrador",
+      "Auxiliar Contable",
+      "Secretaria Administrativa",
+      "Operario de Alistamiento",
+    ],
+  },
+  {
+    type: "title",
+    key: "title-compras",
+    title: "Módulo de Compras",
+    roles: [
+      "Administrador",
+      "Auxiliar Contable",
+      "Secretaria Administrativa",
+      "Operario de Alistamiento",
+    ],
+  },
+  {
+    type: "collapse",
+    name: "Ordenes de Compra",
+    key: "ordenes-compra",
+    icon: <Icon fontSize="small">receipt_long</Icon>,
+    route: "/ordenes-compra",
+    roles: ["Administrador", "Auxiliar Contable", "Secretaria Administrativa"],
     component: <Tables />,
   },
   {
+    type: "collapse",
+    name: "Compras",
+    key: "compras",
+    icon: <Icon fontSize="small">receipt_long</Icon>,
+    route: "/compras",
+    roles: [
+      "Administrador",
+      "Auxiliar Contable",
+      "Secretaria Administrativa",
+      "Operario de Alistamiento",
+    ],
+    component: <Tables />,
+  },
+  {
+    type: "collapse",
+    name: "Recepciones",
+    key: "recepciones",
+    icon: <Icon fontSize="small">receipt_long</Icon>,
+    route: "/recepciones",
+    roles: [
+      "Administrador",
+      "Auxiliar Contable",
+      "Secretaria Administrativa",
+      "Operario de Alistamiento",
+    ],
+    component: <Tables />,
+  },
+  //MODULO DE PRODUCCION
+  {
     type: "divider",
-    key: "divider-2",
+    key: "divider-produccion",
+    roles: [
+      "Administrador",
+      "Operario de Produccion",
+      "Secretaria Administrativa",
+      "Operario de Empaque",
+    ],
+  },
+  {
+    type: "title",
+    key: "title-produccion",
+    title: "Módulo de Producción",
+    roles: [
+      "Administrador",
+      "Operario de Produccion",
+      "Secretaria Administrativa",
+      "Operario de Empaque",
+    ],
+  },
+  {
+    type: "collapse",
+    name: "Ordenes de Trabajo",
+    key: "ordenes-trabajo",
+    icon: <Icon fontSize="small">receipt_long</Icon>,
+    route: "/ordenes-trabajo",
+    roles: [
+      "Administrador",
+      "Operario de Produccion",
+      "Secretaria Administrativa",
+      "Operario de Empaque",
+    ],
+    component: <Tables />,
+  },
+  {
+    type: "collapse",
+    name: "Producciones",
+    key: "producciones",
+    icon: <Icon fontSize="small">receipt_long</Icon>,
+    route: "/producciones",
+    roles: [
+      "Administrador",
+      "Operario de Produccion",
+      "Secretaria Administrativa",
+      "Operario de Empaque",
+    ],
+    component: <Tables />,
+  },
+  //MODULO DE VENTAS
+  {
+    type: "divider",
+    key: "divider-ventas",
+    roles: [
+      "Administrador",
+      "Auxiliar Contable",
+      "Secretaria Administrativa",
+      "Operario de Ventas",
+    ],
+  },
+  {
+    type: "title",
+    key: "title-ventas",
+    title: "Módulo de Ventas",
+    roles: [
+      "Administrador",
+      "Auxiliar Contable",
+      "Secretaria Administrativa",
+      "Operario de Ventas",
+    ],
+  },
+  {
+    type: "collapse",
+    name: "Remisiones",
+    key: "remisiones",
+    icon: <Icon fontSize="small">receipt_long</Icon>,
+    route: "/remisiones",
+    roles: [
+      "Administrador",
+      "Auxiliar Contable",
+      "Secretaria Administrativa",
+      "Operario de Ventas",
+    ],
+    component: <Tables />,
+  },
+  {
+    type: "collapse",
+    name: "Ventas",
+    key: "ventas",
+    icon: <Icon fontSize="small">receipt_long</Icon>,
+    route: "/ventas",
+    roles: [
+      "Administrador",
+      "Auxiliar Contable",
+      "Secretaria Administrativa",
+      "Operario de Ventas",
+    ],
+    component: <Tables />,
+  },
+  //MODULO DE REPORTES
+  {
+    type: "divider",
+    key: "divider-reportes",
     roles: allRoles,
   },
   {
     type: "title",
-    key: "title-ordenes",
-    title: "Ordenes de Compra",
+    key: "title-reportes",
+    title: "Reportes",
     roles: allRoles,
   },
   {
     type: "collapse",
-    name: "Billing",
-    key: "billing",
+    name: "Reporte de Ventas",
+    key: "reporte-ventas",
     icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
-    roles: ["Administrador"],
-    component: <Billing />,
+    route: "/reporte-ventas",
+    roles: ["Administrador", "Auxiliar Contable"],
+    component: <Tables />,
   },
   {
     type: "collapse",
-    name: "Notifications",
-    key: "notifications",
-    icon: <Icon fontSize="small">notifications</Icon>,
-    route: "/notifications",
-    roles: ["Administrador"],
-    component: <Notifications />,
+    name: "Reporte de Producciones",
+    key: "reporte-producciones",
+    icon: <Icon fontSize="small">receipt_long</Icon>,
+    route: "/reporte-producciones",
+    roles: allRoles,
+    component: <Tables />,
   },
   {
     type: "collapse",
-    name: "Profile",
-    key: "profile",
-    icon: <Icon fontSize="small">person</Icon>,
-    route: "/profile",
-    roles: ["Administrador"],
-    component: <Profile />,
+    name: "Inventario",
+    key: "inventario",
+    icon: <Icon fontSize="small">receipt_long</Icon>,
+    route: "/inventario",
+    roles: allRoles,
+    component: <Tables />,
   },
 ];
 
