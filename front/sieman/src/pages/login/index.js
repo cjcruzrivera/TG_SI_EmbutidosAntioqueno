@@ -14,7 +14,7 @@ Coded by www.creative-tim.com
 */
 import axios from "axios";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // react-router-dom components
 import { useMaterialUIController, loginUser } from "context";
@@ -45,6 +45,14 @@ function Login() {
     cedula: "",
     password: "",
   });
+
+  useEffect(() => {
+    // Aquí verificamos si el usuario ya está loggeado
+    const userData = localStorage.getItem("userData");
+    if (userData && userData != "{}") {
+      navigate("/dashboard");
+    }
+  }, []);
 
   const [error, setError] = useState(null);
   const [mensaje, setMensaje] = useState(null);

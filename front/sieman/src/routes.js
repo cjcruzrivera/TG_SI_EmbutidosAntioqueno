@@ -10,7 +10,7 @@ Coded by www.creative-tim.com
 
  =========================================================
 
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+* The above copyright notice and this permission notice shall be included in Administrador copies or substantial portions of the Software.
 */
 
 /** 
@@ -36,17 +36,24 @@ Coded by www.creative-tim.com
 */
 
 // Material Dashboard 2 React layouts
-import Dashboard from "layouts/dashboard";
 import Tables from "layouts/tables";
 import Billing from "layouts/billing";
-import RTL from "layouts/rtl";
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
-import SignIn from "layouts/authentication/sign-in";
-import SignUp from "layouts/authentication/sign-up";
 
+import Dashboard from "pages/dashboard";
 // @mui icons
 import Icon from "@mui/material/Icon";
+
+const allRoles = [
+  "Administrador",
+  "Secretaria Administrativa",
+  "Auxiliar Contable",
+  "Operario de Produccion",
+  "Operario de Alistamiento",
+  "Operario de Empaque",
+  "Operario de Ventas",
+];
 
 const routes = [
   {
@@ -55,15 +62,57 @@ const routes = [
     key: "dashboard",
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
+    roles: allRoles,
     component: <Dashboard />,
   },
   {
+    type: "divider",
+    key: "divider-1",
+    roles: ["Administrador"],
+  },
+  {
+    type: "title",
+    key: "title-config",
+    title: "Configuracion",
+    roles: ["Administrador"],
+  },
+  {
     type: "collapse",
-    name: "Tables",
-    key: "tables",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
+    name: "Usuarios",
+    key: "users",
+    icon: <Icon fontSize="small">person</Icon>,
+    route: "/usuarios",
+    roles: ["Administrador"],
     component: <Tables />,
+  },
+  {
+    type: "collapse",
+    name: "Materias Primas",
+    key: "materias-primas",
+    icon: <Icon fontSize="small">bento</Icon>,
+    route: "/materias-primas",
+    roles: ["Administrador"],
+    component: <Tables />,
+  },
+  {
+    type: "collapse",
+    name: "Productos",
+    key: "productos",
+    icon: <Icon fontSize="small">receipt_long</Icon>,
+    route: "/productos",
+    roles: ["Administrador"],
+    component: <Tables />,
+  },
+  {
+    type: "divider",
+    key: "divider-2",
+    roles: allRoles,
+  },
+  {
+    type: "title",
+    key: "title-ordenes",
+    title: "Ordenes de Compra",
+    roles: allRoles,
   },
   {
     type: "collapse",
@@ -71,15 +120,8 @@ const routes = [
     key: "billing",
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: "/billing",
+    roles: ["Administrador"],
     component: <Billing />,
-  },
-  {
-    type: "collapse",
-    name: "RTL",
-    key: "rtl",
-    icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
-    route: "/rtl",
-    component: <RTL />,
   },
   {
     type: "collapse",
@@ -87,6 +129,7 @@ const routes = [
     key: "notifications",
     icon: <Icon fontSize="small">notifications</Icon>,
     route: "/notifications",
+    roles: ["Administrador"],
     component: <Notifications />,
   },
   {
@@ -95,23 +138,8 @@ const routes = [
     key: "profile",
     icon: <Icon fontSize="small">person</Icon>,
     route: "/profile",
+    roles: ["Administrador"],
     component: <Profile />,
-  },
-  {
-    type: "collapse",
-    name: "Sign In",
-    key: "sign-in",
-    icon: <Icon fontSize="small">login</Icon>,
-    route: "/login",
-    component: <SignIn />,
-  },
-  {
-    type: "collapse",
-    name: "Sign Up",
-    key: "sign-up",
-    icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/authentication/sign-up",
-    component: <SignUp />,
   },
 ];
 

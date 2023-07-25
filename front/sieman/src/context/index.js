@@ -18,7 +18,7 @@ Coded by www.creative-tim.com
   you can customize the states for the different components here.
 */
 
-import { createContext, useContext, useReducer, useMemo } from "react";
+import { createContext, useContext, useReducer, useEffect, useMemo } from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
@@ -28,6 +28,8 @@ const MaterialUI = createContext();
 
 // Setting custom name for the context which is visible on react dev tools
 MaterialUI.displayName = "MaterialUIContext";
+
+const USER_STORAGE_KEY = "userData";
 
 // Material Dashboard 2 React reducer
 function reducer(state, action) {
@@ -62,6 +64,9 @@ function reducer(state, action) {
     case "DARKMODE": {
       return { ...state, darkMode: action.value };
     }
+    case "LOGIN_USER": {
+      return { ...state, user: action.value };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -73,17 +78,23 @@ function MaterialUIControllerProvider({ children }) {
   const initialState = {
     miniSidenav: false,
     transparentSidenav: false,
-    whiteSidenav: false,
+    whiteSidenav: true,
     sidenavColor: "info",
     transparentNavbar: true,
-    fixedNavbar: true,
+    fixedNavbar: false,
     openConfigurator: false,
     direction: "ltr",
     layout: "dashboard",
     darkMode: false,
+    user: JSON.parse(localStorage.getItem(USER_STORAGE_KEY)) || null,
   };
 
   const [controller, dispatch] = useReducer(reducer, initialState);
+
+  useEffect(() => {
+    // Guarda el usuario en localStorage cada vez que cambia
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(controller.user));
+  }, [controller.user]);
 
   const value = useMemo(() => [controller, dispatch], [controller, dispatch]);
 
@@ -119,6 +130,7 @@ const setOpenConfigurator = (dispatch, value) => dispatch({ type: "OPEN_CONFIGUR
 const setDirection = (dispatch, value) => dispatch({ type: "DIRECTION", value });
 const setLayout = (dispatch, value) => dispatch({ type: "LAYOUT", value });
 const setDarkMode = (dispatch, value) => dispatch({ type: "DARKMODE", value });
+const loginUser = (dispatch, userData) => dispatch({ type: "LOGIN_USER", value: userData });
 
 export {
   MaterialUIControllerProvider,
@@ -133,4 +145,5 @@ export {
   setDirection,
   setLayout,
   setDarkMode,
+  loginUser,
 };
