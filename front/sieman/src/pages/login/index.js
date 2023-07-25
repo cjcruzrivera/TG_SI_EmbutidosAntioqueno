@@ -38,7 +38,7 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-profile.jpeg";
 import logo from "assets/images/logo.jpg";
 
-function Basic() {
+function Login() {
   const [controller, dispatch] = useMaterialUIController();
 
   const [formData, setFormData] = useState({
@@ -132,7 +132,7 @@ function Basic() {
               />
             </MDBox>
             {error && <MDAlert color="error">{error}</MDAlert>}
-            {mensaje && <MDAlert color="mensaje">{mensaje}</MDAlert>}
+            {mensaje && <MDAlert color="info">{mensaje}</MDAlert>}
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth onClick={handleLogin}>
                 Ingresar
@@ -145,4 +145,4 @@ function Basic() {
   );
 }
 
-export default Basic;
+export default Login;
