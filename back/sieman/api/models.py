@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group, Permission
+from django.contrib.auth.hashers import make_password  # Importa make_password desde hashers
 
 class UsuarioManager(BaseUserManager):
     def create_user(self, cedula, nombre, email, rol, password=None):
@@ -52,18 +53,23 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.nombre
+    
+    def set_password(self, raw_password):
+        self.password = make_password(raw_password)
 
 class MateriaPrima(models.Model):
     nombre = models.CharField(max_length=100)
     tipo = models.CharField(max_length=50)
     stock_minimo = models.IntegerField()
+    active = models.BooleanField(default=True)
 
 class Producto(models.Model):
     nombre = models.CharField(max_length=100)
     tipo = models.CharField(max_length=50)
-    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    precio = models.IntegerField()
     stock_minimo = models.IntegerField()
-    peso = models.DecimalField(max_digits=6, decimal_places=2)
+    peso = models.IntegerField(null=True)
+    active = models.BooleanField(default=True)
 
 class Bodega(models.Model):
     nombre = models.CharField(max_length=100)
@@ -83,6 +89,7 @@ class InventarioPR(models.Model):
 class ComposicionPR(models.Model):
     id_prod = models.ForeignKey(Producto, on_delete=models.CASCADE)
     id_mp = models.ForeignKey(MateriaPrima, on_delete=models.CASCADE)
+    cantidad = models.IntegerField()
 
 class OrdenCompra(models.Model):
     fecha = models.DateField()
@@ -100,7 +107,7 @@ class Compra(models.Model):
     fecha = models.DateField()
     estado = models.CharField(max_length=50)
     id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    motivo_devolucion = models.TextField()
+    motivo_devolucion = models.TextField(null=True)
 
 class Recepcion(models.Model):
     id_compra = models.ForeignKey(Compra, on_delete=models.CASCADE)
