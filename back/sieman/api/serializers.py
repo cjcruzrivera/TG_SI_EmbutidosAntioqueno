@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
+
 from django.contrib.auth import authenticate
 from .models import (
     Usuario,
@@ -45,8 +47,30 @@ class LoginSerializer(serializers.Serializer):
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        exclude = ('password', 'is_superuser', 'is_staff', 'is_active', 'groups', 'user_permissions', 'last_login')  
+        exclude = ('is_superuser', 'is_staff', 'groups', 'user_permissions', 'last_login')  
+        extra_kwargs = {
+            'password': {'write_only': True, 'required': False},
+            "cedula": {
+                "validators": [UniqueValidator(queryset=Usuario.objects.all(), message="Ya existe un usuario registrado con esta cédula.")]
+            }
+        }
+    def create(self, validated_data):
+        password = validated_data.pop('password', None)
+        usuario = super().create(validated_data)
+        if password:
+            usuario.set_password(password)
+            usuario.save()
+        return usuario
 
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        print(instance)
+        usuario = super().update(instance, validated_data)
+        if password:
+            usuario.set_password(password)
+            usuario.save()
+        return usuario
+    
 class MateriaPrimaSerializer(serializers.ModelSerializer):
     class Meta:
         model = MateriaPrima
