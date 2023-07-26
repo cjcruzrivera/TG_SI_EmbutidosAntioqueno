@@ -40,6 +40,9 @@ import Tables from "layouts/tables";
 
 // Implemented pages
 import Dashboard from "pages/dashboard";
+import Usuarios from "pages/usuarios";
+import CreateUsuarios from "pages/usuarios/create";
+import EditUsuarios from "pages/usuarios/edit";
 // @mui icons
 import Icon from "@mui/material/Icon";
 
@@ -83,7 +86,7 @@ const routes = [
     icon: <Icon fontSize="small">person</Icon>,
     route: "/usuarios",
     roles: ["Administrador", "Auxiliar Contable"],
-    component: <Tables />,
+    component: <Usuarios />,
   },
   {
     type: "collapse",
@@ -280,7 +283,7 @@ const routes = [
     key: "reporte-ventas",
     icon: <Icon fontSize="small">bar_chart</Icon>,
     route: "/reporte-ventas",
-    roles: ["Administrador", "Auxiliar Contable"],
+    roles: ["Administrador", "Auxiliar Contable", "Operario de Ventas"],
     component: <Tables />,
   },
   {
@@ -300,6 +303,21 @@ const routes = [
     route: "/inventario",
     roles: allRoles,
     component: <Tables />,
+  },
+  // RUTAS SIN MENU, SOLO PARA ACCESO POR URL
+  {
+    type: "route",
+    key: "edicion-usuario",
+    route: "/usuarios/editar/:id",
+    roles: ["Administrador", "Auxiliar Contable"],
+    component: <EditUsuarios />,
+  },
+  {
+    type: "route",
+    key: "creacion-usuario",
+    route: "/usuarios/crear",
+    roles: ["Administrador", "Auxiliar Contable"],
+    component: <CreateUsuarios />,
   },
 ];
 

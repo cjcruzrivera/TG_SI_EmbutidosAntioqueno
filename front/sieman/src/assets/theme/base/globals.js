@@ -26,6 +26,10 @@ const globals = {
     margin: 0,
     padding: 0,
   },
+  ".formError": {
+    color: "red",
+    fontSize: "small",
+  },
   "a, a:link, a:visited": {
     textDecoration: "none !important",
   },
@@ -33,7 +37,7 @@ const globals = {
     color: `${dark.main} !important`,
     transition: "color 150ms ease-in !important",
   },
-  "a.link:hover, .link:hover, a.link:focus, .link:focus": {
+  ".fake-link:hover, a:hover, a.link:hover, .link:hover, a.link:focus, .link:focus": {
     color: `${info.main} !important`,
   },
 };

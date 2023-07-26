@@ -88,7 +88,6 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const renderRoutes = routes.map(
     ({ type, name, icon, title, noCollapse, key, href, route, roles }) => {
       let returnValue;
-      console.log(user);
       if (roles && !roles.includes(user?.rol)) return null;
       if (type === "collapse") {
         returnValue = href ? (
