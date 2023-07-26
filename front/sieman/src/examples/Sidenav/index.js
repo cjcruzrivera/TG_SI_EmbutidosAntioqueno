@@ -174,7 +174,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
               {brandName}
             </MDTypography>
             <MDTypography component="h6" variant="button" fontWeight="medium" color={textColor}>
-              {user.nombre}
+              {user?.nombre}
             </MDTypography>
           </MDBox>
         </MDBox>
