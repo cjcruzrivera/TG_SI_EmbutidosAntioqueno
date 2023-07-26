@@ -83,6 +83,135 @@ export default function data() {
         ),
       },
       {
+        project: <Project image={LogoAsana} name="Asana" />,
+        budget: (
+          <MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">
+            $2,500
+          </MDTypography>
+        ),
+        status: (
+          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+            working
+          </MDTypography>
+        ),
+        completion: <Progress color="info" value={60} />,
+        action: (
+          <MDTypography component="a" href="#" color="text">
+            <Icon>more_vert</Icon>
+          </MDTypography>
+        ),
+      },
+      {
+        project: "Asana",
+        budget: "$2,500",
+        status: (
+          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+            working
+          </MDTypography>
+        ),
+        completion: <Progress color="info" value={60} />,
+        action: (
+          <MDTypography component="a" href="#" color="text">
+            <Icon>more_vert</Icon>
+          </MDTypography>
+        ),
+      },
+      {
+        project: <Project image={LogoAsana} name="Asana" />,
+        budget: (
+          <MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">
+            $2,500
+          </MDTypography>
+        ),
+        status: (
+          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+            working
+          </MDTypography>
+        ),
+        completion: <Progress color="info" value={60} />,
+        action: (
+          <MDTypography component="a" href="#" color="text">
+            <Icon>more_vert</Icon>
+          </MDTypography>
+        ),
+      },
+      {
+        project: <Project image={LogoAsana} name="Asana" />,
+        budget: (
+          <MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">
+            $2,500
+          </MDTypography>
+        ),
+        status: (
+          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+            working
+          </MDTypography>
+        ),
+        completion: <Progress color="info" value={60} />,
+        action: (
+          <MDTypography component="a" href="#" color="text">
+            <Icon>more_vert</Icon>
+          </MDTypography>
+        ),
+      },
+      {
+        project: <Project image={LogoAsana} name="Asana" />,
+        budget: (
+          <MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">
+            $2,500
+          </MDTypography>
+        ),
+        status: (
+          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+            working
+          </MDTypography>
+        ),
+        completion: <Progress color="info" value={60} />,
+        action: (
+          <MDTypography component="a" href="#" color="text">
+            <Icon>more_vert</Icon>
+          </MDTypography>
+        ),
+      },
+      {
+        project: <Project image={LogoAsana} name="Asana" />,
+        budget: (
+          <MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">
+            $2,500
+          </MDTypography>
+        ),
+        status: (
+          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+            working
+          </MDTypography>
+        ),
+        completion: <Progress color="info" value={60} />,
+        action: (
+          <MDTypography component="a" href="#" color="text">
+            <Icon>more_vert</Icon>
+          </MDTypography>
+        ),
+      },
+      {
+        project: <Project image={LogoAsana} name="Asana" />,
+        budget: (
+          <MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">
+            $2,500
+          </MDTypography>
+        ),
+        status: (
+          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+            working
+          </MDTypography>
+        ),
+        completion: <Progress color="info" value={60} />,
+        action: (
+          <MDTypography component="a" href="#" color="text">
+            <Icon>more_vert</Icon>
+          </MDTypography>
+        ),
+      },
+      {
         project: <Project image={logoGithub} name="Github" />,
         budget: (
           <MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">

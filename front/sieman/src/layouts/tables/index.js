@@ -87,9 +87,10 @@ function Tables() {
                 <DataTable
                   table={{ columns: pColumns, rows: pRows }}
                   isSorted={false}
-                  entriesPerPage={false}
+                  entriesPerPage={{ defaultValue: 5, entries: [5, 10, 25] }}
                   showTotalEntries={false}
                   noEndBorder
+                  canSearch
                 />
               </MDBox>
             </Card>
