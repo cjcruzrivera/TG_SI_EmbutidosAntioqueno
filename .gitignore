@@ -2,3 +2,4 @@ back/venv
 *.pyc
 back/sieman/api/migrations
 front/node_modules/
+.vscode/
