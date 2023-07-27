@@ -40,9 +40,16 @@ import Tables from "layouts/tables";
 
 // Implemented pages
 import Dashboard from "pages/dashboard";
+
+// Usuarios pages
 import Usuarios from "pages/usuarios";
 import CreateUsuarios from "pages/usuarios/create";
 import EditUsuarios from "pages/usuarios/edit";
+
+// Materias Primas pages
+import MateriasPrimas from "pages/materias-primas";
+import CreateMateriasPrimas from "pages/materias-primas/create";
+import EditMateriasPrimas from "pages/materias-primas/edit";
 // @mui icons
 import Icon from "@mui/material/Icon";
 
@@ -95,7 +102,7 @@ const routes = [
     icon: <Icon fontSize="small">bento</Icon>,
     route: "/materias-primas",
     roles: ["Administrador", "Auxiliar Contable"],
-    component: <Tables />,
+    component: <MateriasPrimas />,
   },
   {
     type: "collapse",
@@ -318,6 +325,20 @@ const routes = [
     route: "/usuarios/crear",
     roles: ["Administrador", "Auxiliar Contable"],
     component: <CreateUsuarios />,
+  },
+  {
+    type: "route",
+    key: "edicion-materias-primas",
+    route: "/materias-primas/editar/:id",
+    roles: ["Administrador", "Auxiliar Contable"],
+    component: <EditMateriasPrimas />,
+  },
+  {
+    type: "route",
+    key: "creacion-materias-primas",
+    route: "/materias-primas/crear",
+    roles: ["Administrador", "Auxiliar Contable"],
+    component: <CreateMateriasPrimas />,
   },
 ];
 
