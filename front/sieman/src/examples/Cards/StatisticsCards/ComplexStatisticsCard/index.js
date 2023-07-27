@@ -60,6 +60,7 @@ function ComplexStatisticsCard({ color, title, count, percentage, icon }) {
             component="span"
             variant="button"
             fontWeight="bold"
+            fontSize="sm"
             color={percentage.color}
           >
             {percentage.amount}

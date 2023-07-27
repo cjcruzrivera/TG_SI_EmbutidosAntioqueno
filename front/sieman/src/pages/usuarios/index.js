@@ -13,6 +13,7 @@ import Icon from "@mui/material/Icon";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import Loader from "components/Loader";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -151,7 +152,7 @@ function Usuarios() {
                 {isLoading ? (
                   <MDBox display="flex" justifyContent="center">
                     <MDTypography variant="h4" fontWeight="medium" color="text">
-                      Cargando...
+                      <Loader />
                     </MDTypography>
                   </MDBox>
                 ) : error ? (
