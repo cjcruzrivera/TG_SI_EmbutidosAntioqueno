@@ -63,6 +63,10 @@ ROOT_URLCONF = 'sieman.urls'
 
 AUTH_USER_MODEL = 'api.Usuario'
 
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['api.filter.CustomOrderingFilter'],  
+}
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
