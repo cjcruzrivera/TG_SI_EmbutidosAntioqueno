@@ -68,12 +68,9 @@ function EditUsuarios() {
     if (!formData.nombre) newErrors.nombre = "El nombre completo es obligatorio.";
     if (!formData.rol) newErrors.rol = "El rol es obligatorio.";
     if (!formData.email) newErrors.email = "El email es obligatorio.";
-    console.log("formData", formData);
 
     const [validPass, errors] = formData.password ? validatePass(formData.password) : [true, ""];
     if (!validPass) newErrors.password = errors;
-    console.log("validPass", validPass);
-    console.log("newErrors", newErrors);
     // Si hay errores, mostramos los mensajes y no enviamos el formulario
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
