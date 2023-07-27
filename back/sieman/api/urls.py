@@ -5,7 +5,8 @@ from .views import LoginView, UsuarioViewSet, MateriaPrimaViewSet, ProductoViewS
 
 router = DefaultRouter()
 router.register(r'usuarios', UsuarioViewSet)
-
+router.register(r'materias-primas', MateriaPrimaViewSet)
+router.register(r'productos', ProductoViewSet)
 
 urlpatterns = [
     # URLs de la API

@@ -76,10 +76,36 @@ class MateriaPrimaSerializer(serializers.ModelSerializer):
         model = MateriaPrima
         fields = '__all__'
 
+class ComposicionPRSerializer(serializers.ModelSerializer):
+    id_mp = MateriaPrimaSerializer()
+    
+    class Meta:
+        model = ComposicionPR
+        fields = ('id_mp', 'cantidad')
+
 class ProductoSerializer(serializers.ModelSerializer):
+    composicion = serializers.SerializerMethodField()  
+
     class Meta:
         model = Producto
         fields = '__all__'
+    def get_composicion(self, instance):
+        # Obtener los objetos de composicion relacionados con el producto
+        composiciones = ComposicionPR.objects.filter(id_prod=instance)
+
+        # Serializar la información de composicion
+        composicion_serializer = ComposicionPRSerializer(composiciones, many=True)
+
+        return composicion_serializer.data
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        composicion = representation.get('composicion', [])
+        for item in composicion:
+            item['id_mp']['cantidad'] = item['cantidad']
+        
+        representation['composicion'] = [item['id_mp'] for item in composicion]
+        return representation
 
 class BodegaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -94,11 +120,6 @@ class InventarioMPSerializer(serializers.ModelSerializer):
 class InventarioPRSerializer(serializers.ModelSerializer):
     class Meta:
         model = InventarioPR
-        fields = '__all__'
-
-class ComposicionPRSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ComposicionPR
         fields = '__all__'
 
 class OrdenCompraSerializer(serializers.ModelSerializer):
