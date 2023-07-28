@@ -50,6 +50,12 @@ import EditUsuarios from "pages/usuarios/edit";
 import MateriasPrimas from "pages/materias-primas";
 import CreateMateriasPrimas from "pages/materias-primas/create";
 import EditMateriasPrimas from "pages/materias-primas/edit";
+
+// Productos pages
+import Productos from "pages/productos";
+import CreateProductos from "pages/productos/create";
+import EditProductos from "pages/productos/edit";
+
 // @mui icons
 import Icon from "@mui/material/Icon";
 
@@ -111,7 +117,7 @@ const routes = [
     icon: <Icon fontSize="small">all_inbox</Icon>,
     route: "/productos",
     roles: ["Administrador", "Auxiliar Contable"],
-    component: <Tables />,
+    component: <Productos />,
   },
   //MODULO DE COMPRAS
   {
@@ -339,6 +345,20 @@ const routes = [
     route: "/materias-primas/crear",
     roles: ["Administrador", "Auxiliar Contable"],
     component: <CreateMateriasPrimas />,
+  },
+  {
+    type: "route",
+    key: "edicion-productos",
+    route: "/productos/editar/:id",
+    roles: ["Administrador", "Auxiliar Contable"],
+    component: <EditProductos />,
+  },
+  {
+    type: "route",
+    key: "creacion-productos",
+    route: "/productos/crear",
+    roles: ["Administrador", "Auxiliar Contable"],
+    component: <CreateProductos />,
   },
 ];
 
