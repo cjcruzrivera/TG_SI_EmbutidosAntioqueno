@@ -92,53 +92,57 @@ class ComposicionPR(models.Model):
     cantidad = models.IntegerField()
 
 class OrdenCompra(models.Model):
-    fecha = models.DateField()
-    nombre_proveedor = models.CharField(max_length=100)
-    estado = models.CharField(max_length=50)
-    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-
-class MpOrdenCompra(models.Model):
-    id_mp = models.ForeignKey(MateriaPrima, on_delete=models.CASCADE)
-    id_orden = models.ForeignKey(OrdenCompra, on_delete=models.CASCADE)
+    fecha = models.DateTimeField(auto_now_add=True)
+    estado = models.CharField(max_length=50, default='Pendiente')
+    id_usuario = models.ForeignKey(Usuario, null=True, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
+    id_mp = models.ForeignKey(MateriaPrima, on_delete=models.CASCADE)
 
 class Compra(models.Model):
     id_orden = models.ForeignKey(OrdenCompra, on_delete=models.CASCADE)
-    fecha = models.DateField()
-    estado = models.CharField(max_length=50)
+    fecha = models.DateTimeField(auto_now_add=True)
+    estado = models.CharField(max_length=50, default='Realizada')
+    nombre_proveedor = models.CharField(max_length=100)
     id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    motivo_devolucion = models.TextField(null=True)
+    fecha_cierre = models.DateTimeField(null=True)
+    nota_credito = models.CharField(max_length=100)
+    valor = models.IntegerField()
 
 class Recepcion(models.Model):
     id_compra = models.ForeignKey(Compra, on_delete=models.CASCADE)
     id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    fecha = models.DateField()
+    fecha = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=50)
-    olor = models.CharField(max_length=50)
-    color = models.CharField(max_length=50)
-    operario = models.CharField(max_length=100)
-    vehiculo = models.CharField(max_length=100)
+    olor = models.BooleanField()
+    color = models.BooleanField()
+    operario = models.BooleanField()
+    vehiculo = models.BooleanField()
     lote = models.CharField(max_length=50)
+    motivo_devolucion = models.TextField(null=True)
 
 class OrdenTrabajo(models.Model):
     id_prod = models.ForeignKey(Producto, on_delete=models.CASCADE)
     id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    fecha = models.DateField()
+    fecha = models.DateTimeField(auto_now_add=True)
     cantidad = models.IntegerField()
-    estado = models.CharField(max_length=50)
+    estado = models.CharField(max_length=50, default='Pendiente')
 
 class Produccion(models.Model):
     id_orden = models.ForeignKey(OrdenTrabajo, on_delete=models.CASCADE)
     id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    fecha = models.DateField()
+    fecha = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=50)
 
 class Remision(models.Model):
     id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=100)
-    cliente = models.CharField(max_length=100)
-    fecha = models.DateField()
+    cliente = models.CharField(max_length=100, null=True)
+    fecha_generacion = models.DateTimeField(auto_now_add=True)
+    fecha_entrega = models.DateField()
     tipo = models.CharField(max_length=50)
+    estado = models.CharField(max_length=50, default='Pendiente')
+    total = models.IntegerField()
+
 
 class ProdsRemision(models.Model):
     id_remision = models.ForeignKey(Remision, on_delete=models.CASCADE)
@@ -149,5 +153,5 @@ class ProdsRemision(models.Model):
 class Venta(models.Model):
     id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     id_remision = models.ForeignKey(Remision, on_delete=models.CASCADE)
-    fecha = models.DateField()
+    fecha = models.DateTimeField(auto_now_add=True)
     metodo_pago = models.CharField(max_length=50)

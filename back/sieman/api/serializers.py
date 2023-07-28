@@ -11,7 +11,6 @@ from .models import (
     InventarioPR,
     ComposicionPR,
     OrdenCompra,
-    MpOrdenCompra,
     Compra,
     Recepcion,
     OrdenTrabajo,
@@ -125,11 +124,6 @@ class InventarioPRSerializer(serializers.ModelSerializer):
 class OrdenCompraSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrdenCompra
-        fields = '__all__'
-
-class MpOrdenCompraSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MpOrdenCompra
         fields = '__all__'
 
 class CompraSerializer(serializers.ModelSerializer):
