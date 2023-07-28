@@ -65,7 +65,6 @@ const allRoles = [
   "Auxiliar Contable",
   "Operario de Produccion",
   "Operario de Alistamiento",
-  "Operario de Empaque",
   "Operario de Ventas",
 ];
 // TODO: define routes and roles by module and make parametrizable
@@ -182,23 +181,13 @@ const routes = [
   {
     type: "divider",
     key: "divider-produccion",
-    roles: [
-      "Administrador",
-      "Operario de Produccion",
-      "Secretaria Administrativa",
-      "Operario de Empaque",
-    ],
+    roles: ["Administrador", "Operario de Produccion", "Secretaria Administrativa"],
   },
   {
     type: "title",
     key: "title-produccion",
     title: "Módulo de Producción",
-    roles: [
-      "Administrador",
-      "Operario de Produccion",
-      "Secretaria Administrativa",
-      "Operario de Empaque",
-    ],
+    roles: ["Administrador", "Operario de Produccion", "Secretaria Administrativa"],
   },
   {
     type: "collapse",
@@ -206,12 +195,7 @@ const routes = [
     key: "ordenes-trabajo",
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/ordenes-trabajo",
-    roles: [
-      "Administrador",
-      "Operario de Produccion",
-      "Secretaria Administrativa",
-      "Operario de Empaque",
-    ],
+    roles: ["Administrador", "Operario de Produccion", "Secretaria Administrativa"],
     component: <Tables />,
   },
   {
