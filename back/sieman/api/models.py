@@ -75,14 +75,14 @@ class Bodega(models.Model):
     nombre = models.CharField(max_length=100)
 
 class InventarioMP(models.Model):
-    id_bodega = models.ForeignKey(Bodega, on_delete=models.CASCADE)
-    id_mp = models.ForeignKey(MateriaPrima, on_delete=models.CASCADE)
+    bodega = models.ForeignKey(Bodega, on_delete=models.CASCADE, null=True)
+    materia_prima = models.ForeignKey(MateriaPrima, on_delete=models.CASCADE)
     estado_mp = models.CharField(max_length=50)
     cantidad = models.IntegerField()
 
 class InventarioPR(models.Model):
-    id_bodega = models.ForeignKey(Bodega, on_delete=models.CASCADE)
-    id_prod = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    bodega = models.ForeignKey(Bodega, on_delete=models.CASCADE, null=True)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     estado_prod = models.CharField(max_length=50)
     cantidad = models.IntegerField()
 
@@ -94,23 +94,23 @@ class ComposicionPR(models.Model):
 class OrdenCompra(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=50, default='Pendiente')
-    id_usuario = models.ForeignKey(Usuario, null=True, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, null=True, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
-    id_mp = models.ForeignKey(MateriaPrima, on_delete=models.CASCADE)
+    materia_prima = models.ForeignKey(MateriaPrima, on_delete=models.CASCADE)
 
 class Compra(models.Model):
-    id_orden = models.ForeignKey(OrdenCompra, on_delete=models.CASCADE)
+    orden_compra = models.ForeignKey(OrdenCompra, on_delete=models.CASCADE)
     fecha = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=50, default='Realizada')
     nombre_proveedor = models.CharField(max_length=100)
-    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     fecha_cierre = models.DateTimeField(null=True)
-    nota_credito = models.CharField(max_length=100)
+    nota_credito = models.CharField(max_length=100, null=True)
     valor = models.IntegerField()
 
 class Recepcion(models.Model):
-    id_compra = models.ForeignKey(Compra, on_delete=models.CASCADE)
-    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    compra = models.ForeignKey(Compra, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     fecha = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=50)
     olor = models.BooleanField()
@@ -121,20 +121,20 @@ class Recepcion(models.Model):
     motivo_devolucion = models.TextField(null=True)
 
 class OrdenTrabajo(models.Model):
-    id_prod = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     fecha = models.DateTimeField(auto_now_add=True)
     cantidad = models.IntegerField()
     estado = models.CharField(max_length=50, default='Pendiente')
 
 class Produccion(models.Model):
-    id_orden = models.ForeignKey(OrdenTrabajo, on_delete=models.CASCADE)
-    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    orden = models.ForeignKey(OrdenTrabajo, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     fecha = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=50)
 
 class Remision(models.Model):
-    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=100)
     cliente = models.CharField(max_length=100, null=True)
     fecha_generacion = models.DateTimeField(auto_now_add=True)
@@ -143,15 +143,14 @@ class Remision(models.Model):
     estado = models.CharField(max_length=50, default='Pendiente')
     total = models.IntegerField()
 
-
 class ProdsRemision(models.Model):
-    id_remision = models.ForeignKey(Remision, on_delete=models.CASCADE)
-    id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    remision = models.ForeignKey(Remision, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
 
 class Venta(models.Model):
-    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     id_remision = models.ForeignKey(Remision, on_delete=models.CASCADE)
     fecha = models.DateTimeField(auto_now_add=True)
     metodo_pago = models.CharField(max_length=50)
