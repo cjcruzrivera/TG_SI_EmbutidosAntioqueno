@@ -1,7 +1,9 @@
 from rest_framework import status
-from .models import Usuario, MateriaPrima, Producto, ComposicionPR
-from .serializers import UsuarioSerializer, LoginSerializer, MateriaPrimaSerializer, ProductoSerializer
-
+from .models import Usuario, MateriaPrima, Producto, ComposicionPR, Compra, OrdenCompra, Recepcion, InventarioMP
+from .serializers import (
+    UsuarioSerializer, LoginSerializer, MateriaPrimaSerializer, ProductoSerializer, OrdenCompraSerializer, 
+    OrdenCompraListSerializer, CompraSerializer, CompraListSerializer, RecepcionSerializer, RecepcionListSerializer
+)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets
@@ -15,7 +17,6 @@ class LoginView(APIView):
             return Response({'mensaje': 'Inicio de sesión exitoso.', 'usuario_info': UsuarioSerializer(usuario).data})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.filter(is_active=True, is_superuser=False)
@@ -90,4 +91,53 @@ class ProductoViewSet(viewsets.ModelViewSet):
         instance.active = False
         instance.save()
         return Response({'message': 'El producto ha sido inhabilitado.'}, status=status.HTTP_204_NO_CONTENT)
+
+class OrdenCompraViewSet(viewsets.ModelViewSet):
+    queryset = OrdenCompra.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return OrdenCompraListSerializer
+        else:
+            return OrdenCompraSerializer
+ 
+class CompraViewSet(viewsets.ModelViewSet):
+    queryset = Compra.objects.all()
     
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return CompraListSerializer
+        else:
+            return CompraSerializer
+
+class RecepcionViewSet(viewsets.ModelViewSet):
+    queryset = Recepcion.objects.all()
+    
+    def perform_create(self, serializer):
+        recepcion = serializer.save()
+        compra.estado = recepcion.estado
+        compra.save()
+
+        if recepcion.estado == 'Recibida':
+            compra = recepcion.compra
+            orden_compra = compra.orden_compra
+
+            cantidad_recibida = orden_compra.cantidad
+
+            inventario_materia_prima, created = InventarioMP.objects.get_or_create(
+                materia_prima=orden_compra.materia_prima,
+                estado_mp='Recibida',
+                defaults={'cantidad': cantidad_recibida}
+            )
+
+            if not created:
+                inventario_materia_prima.cantidad += cantidad_recibida
+                inventario_materia_prima.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return RecepcionListSerializer
+        else:
+            return RecepcionSerializer

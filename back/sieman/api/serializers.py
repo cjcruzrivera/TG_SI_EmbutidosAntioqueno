@@ -41,8 +41,6 @@ class LoginSerializer(serializers.Serializer):
 
         return data
 
-# Define el serializer para cada modelo
-
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
@@ -89,10 +87,8 @@ class ProductoSerializer(serializers.ModelSerializer):
         model = Producto
         fields = '__all__'
     def get_composicion(self, instance):
-        # Obtener los objetos de composicion relacionados con el producto
         composiciones = ComposicionPR.objects.filter(id_prod=instance)
 
-        # Serializar la información de composicion
         composicion_serializer = ComposicionPRSerializer(composiciones, many=True)
 
         return composicion_serializer.data
@@ -126,15 +122,27 @@ class OrdenCompraSerializer(serializers.ModelSerializer):
         model = OrdenCompra
         fields = '__all__'
 
+class OrdenCompraListSerializer(OrdenCompraSerializer):
+    usuario = UsuarioSerializer()  
+    materia_prima = MateriaPrimaSerializer()
+
 class CompraSerializer(serializers.ModelSerializer):
     class Meta:
         model = Compra
         fields = '__all__'
 
+class CompraListSerializer(CompraSerializer):
+    orden_compra = OrdenCompraListSerializer()  
+    usuario = UsuarioSerializer()
+
 class RecepcionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recepcion
         fields = '__all__'
+
+class RecepcionListSerializer(RecepcionSerializer):
+    compra = CompraListSerializer()  
+    usuario = UsuarioSerializer()
 
 class OrdenTrabajoSerializer(serializers.ModelSerializer):
     class Meta:
