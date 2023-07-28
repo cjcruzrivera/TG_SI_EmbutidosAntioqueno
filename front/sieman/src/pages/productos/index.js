@@ -22,6 +22,8 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
+import formatMoney from "utils/formatMoney";
+
 function Productos() {
   const columns = [
     { Header: "nombre", accessor: "nombre", align: "left" },
@@ -64,14 +66,6 @@ function Productos() {
       console.log(error);
       Swal.fire("¡Error!", "El producto no ha podido ser inhabilitado.", "error");
     }
-  };
-
-  const formatMoney = (number) => {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      minimumFractionDigits: 0,
-    }).format(number);
   };
 
   useEffect(() => {
