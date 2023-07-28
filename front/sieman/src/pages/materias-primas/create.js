@@ -134,6 +134,7 @@ function CreateMateriasPrimas() {
                       label="Stock Minimo"
                       type="number"
                       fullWidth
+                      required
                       name="stock_minimo"
                       value={formData.stock_minimo}
                       onChange={handleChange}
@@ -153,7 +154,7 @@ function CreateMateriasPrimas() {
                         });
                       }}
                       renderInput={(params) => (
-                        <MDInput type="text" {...params} label="Tipo Materia Prima" />
+                        <MDInput type="text" {...params} label="Tipo Materia Prima *" />
                       )}
                     />
                     {errors.tipo && <span className="formError">{errors.tipo}</span>}

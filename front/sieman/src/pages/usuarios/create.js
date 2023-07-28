@@ -32,7 +32,6 @@ function CreateUsuarios() {
     "Auxiliar Contable",
     "Operario de Produccion",
     "Operario de Alistamiento",
-    "Operario de Empaque",
     "Operario de Ventas",
   ];
   const [formData, setFormData] = useState({
@@ -142,6 +141,7 @@ function CreateUsuarios() {
                       name="cedula"
                       fullWidth
                       value={formData.cedula}
+                      required
                       onChange={handleChange}
                     />
                     {errors.cedula && <span className="formError">{errors.cedula}</span>}
@@ -166,12 +166,14 @@ function CreateUsuarios() {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
+                      required
                     />
                     {errors.email && <span className="formError">{errors.email}</span>}
                   </Grid>
                   <Grid item xs={12} sm={6} md={4}>
                     <Autocomplete
                       value={formData.rol}
+                      required
                       options={rolesOptions}
                       onChange={(event, newValue) => {
                         setFormData({
@@ -179,7 +181,7 @@ function CreateUsuarios() {
                           ["rol"]: newValue,
                         });
                       }}
-                      renderInput={(params) => <MDInput type="text" {...params} label="Rol" />}
+                      renderInput={(params) => <MDInput type="text" {...params} label="Rol *" />}
                     />
                     {errors.rol && <span className="formError">{errors.rol}</span>}
                   </Grid>
@@ -188,6 +190,7 @@ function CreateUsuarios() {
                       type="password"
                       label="Contraseña"
                       name="password"
+                      required
                       value={formData.password}
                       fullWidth
                       onChange={handleChange}
