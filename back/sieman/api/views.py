@@ -104,6 +104,12 @@ class OrdenCompraViewSet(viewsets.ModelViewSet):
 class CompraViewSet(viewsets.ModelViewSet):
     queryset = Compra.objects.all()
     
+    def perform_create(self, serializer):
+        compra = serializer.save()
+        orden = compra.orden_compra
+        orden.estado = 'Realizada'
+        orden.save()
+    
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return CompraListSerializer
@@ -115,6 +121,7 @@ class RecepcionViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         recepcion = serializer.save()
+        compra = recepcion.compra
         compra.estado = recepcion.estado
         compra.save()
 
