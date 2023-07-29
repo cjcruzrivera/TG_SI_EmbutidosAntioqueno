@@ -27,6 +27,7 @@ import formatMoney from "utils/formatMoney";
 
 function Compras() {
   const columns = [
+    { Header: "", accessor: "accion", width: "5%", align: "center" },
     { Header: "N° de Compra", accessor: "id", width: "10%", align: "left" },
     { Header: "fecha", accessor: "fecha", width: "10%", align: "center" },
     { Header: "orden", accessor: "orden_info", width: "10%", align: "center" },
@@ -35,7 +36,6 @@ function Compras() {
     { Header: "proveedor", accessor: "nombre_proveedor", align: "center" },
     { Header: "usuario", accessor: "usuario.nombre", align: "center" },
     { Header: "Cierre", accessor: "cierre", align: "center" },
-    { Header: "accion", accessor: "accion", align: "center" },
   ];
 
   const [rows, setRows] = useState([]);
@@ -214,7 +214,7 @@ function Compras() {
                   Compras Registradas
                 </MDTypography>
               </MDBox>
-              <MDBox pt={3} mb={6}>
+              <MDBox pt={3} mb={6} pl={2}>
                 {isLoading ? (
                   <MDBox display="flex" justifyContent="center">
                     <MDTypography variant="h4" fontWeight="medium" color="text">

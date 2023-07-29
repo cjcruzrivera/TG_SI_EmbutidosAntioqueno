@@ -26,13 +26,13 @@ import formatMoney from "utils/formatMoney";
 
 function Productos() {
   const columns = [
+    { Header: "", accessor: "accion", width: "5%", align: "center" },
     { Header: "nombre", accessor: "nombre", align: "left" },
     { Header: "tipo", accessor: "tipo", align: "center" },
     { Header: "precio", accessor: "precio", align: "center" },
     { Header: "peso", accessor: "peso", align: "center" },
     { Header: "stock minimo", accessor: "stock_minimo", align: "center" },
     { Header: "Materias Primas - x(Cantidad)", accessor: "composicion", align: "center" },
-    { Header: "accion", accessor: "accion", align: "center" },
   ];
 
   const [rows, setRows] = useState([]);
@@ -155,7 +155,7 @@ function Productos() {
                   </Icon>
                 </Link>
               </MDBox>
-              <MDBox pt={3} mb={6}>
+              <MDBox pt={3} mb={6} pl={2}>
                 {isLoading ? (
                   <MDBox display="flex" justifyContent="center">
                     <MDTypography variant="h4" fontWeight="medium" color="text">

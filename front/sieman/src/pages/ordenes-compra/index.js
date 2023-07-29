@@ -25,13 +25,13 @@ import formatDate from "utils/formatDate";
 
 function OrdenesCompra() {
   const columns = [
+    { Header: "", accessor: "accion", width: "5%", align: "center" },
     { Header: "N° de Orden", accessor: "id", width: "15%", align: "left" },
     { Header: "fecha", accessor: "fecha", align: "center" },
     { Header: "Materia Prima", accessor: "materia_prima.nombre", align: "center" },
     { Header: "cantidad", accessor: "cantidad", align: "center" },
     { Header: "Usuario Registra", accessor: "usuario.nombre", align: "center" },
     { Header: "estado", accessor: "estado", align: "center" },
-    { Header: "accion", accessor: "accion", align: "center" },
   ];
 
   const [rows, setRows] = useState([]);
@@ -204,7 +204,7 @@ function OrdenesCompra() {
                   </Icon>
                 </Link>
               </MDBox>
-              <MDBox pt={3} mb={6}>
+              <MDBox pt={3} mb={6} pl={2}>
                 {isLoading ? (
                   <MDBox display="flex" justifyContent="center">
                     <MDTypography variant="h4" fontWeight="medium" color="text">

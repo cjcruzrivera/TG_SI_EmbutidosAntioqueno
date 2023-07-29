@@ -23,11 +23,11 @@ import DataTable from "examples/Tables/DataTable";
 
 function Usuarios() {
   const columns = [
-    { Header: "cedula", accessor: "cedula", align: "center" },
+    { Header: "", accessor: "accion", width: "5%", align: "center" },
+    { Header: "cedula", accessor: "cedula", width: "10%", align: "center" },
     { Header: "nombre", accessor: "nombre", align: "left" },
     { Header: "email", accessor: "email", align: "center" },
     { Header: "rol", accessor: "rol", align: "center" },
-    { Header: "accion", accessor: "accion", align: "center" },
   ];
 
   const [rows, setRows] = useState([]);
@@ -148,7 +148,7 @@ function Usuarios() {
                   </Icon>
                 </Link>
               </MDBox>
-              <MDBox pt={3} mb={6}>
+              <MDBox pt={3} mb={6} pl={2}>
                 {isLoading ? (
                   <MDBox display="flex" justifyContent="center">
                     <MDTypography variant="h4" fontWeight="medium" color="text">

@@ -26,6 +26,7 @@ import formatDate from "utils/formatDate";
 
 function Recepciones() {
   const columns = [
+    { Header: "", accessor: "accion", width: "5%", align: "center" },
     { Header: "N° de Compra", accessor: "compra.id", width: "10%", align: "left" },
     { Header: "fecha", accessor: "fecha", width: "10%", align: "center" },
     { Header: "estado", accessor: "estado", align: "center" },
@@ -40,7 +41,6 @@ function Recepciones() {
     { Header: "operario", accessor: "operario", align: "center" },
     { Header: "vehiculo", accessor: "vehiculo", align: "center" },
     { Header: "motivo devolucion", accessor: "motivo_devolucion", align: "center" },
-    { Header: "accion", accessor: "accion", align: "center" },
   ];
 
   const [rows, setRows] = useState([]);
@@ -116,7 +116,7 @@ function Recepciones() {
               <div>
                 <Icon
                   title="REGISTRAR ALISTAMIENTO"
-                  fontSize="large"
+                  fontSize="small"
                   style={{
                     color: "rgb(48 92 223)",
                   }}
@@ -166,7 +166,7 @@ function Recepciones() {
                   Recepciones Registradas
                 </MDTypography>
               </MDBox>
-              <MDBox pt={3} mb={6}>
+              <MDBox pt={3} mb={6} pl={2}>
                 {isLoading ? (
                   <MDBox display="flex" justifyContent="center">
                     <MDTypography variant="h4" fontWeight="medium" color="text">
