@@ -68,6 +68,9 @@ import CreateCompras from "pages/compras/create";
 import Recepciones from "pages/recepciones";
 import CreateRecepcion from "pages/recepciones/create";
 
+//Reportes pages
+import Inventario from "pages/reportes/inventario";
+
 // @mui icons
 import Icon from "@mui/material/Icon";
 
@@ -311,7 +314,7 @@ const routes = [
     icon: <Icon fontSize="small">inventory</Icon>,
     route: "/inventario",
     roles: allRoles,
-    component: <Tables />,
+    component: <Inventario />,
   },
   // RUTAS SIN MENU, SOLO PARA ACCESO POR URL
   {
