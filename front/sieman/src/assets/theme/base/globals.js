@@ -37,8 +37,11 @@ const globals = {
     color: `${dark.main} !important`,
     transition: "color 150ms ease-in !important",
   },
-  ".fake-link:hover, a:hover, a.link:hover, .link:hover, a.link:focus, .link:focus": {
+  "a:hover, a.link:hover, .link:hover, a.link:focus, .link:focus": {
     color: `${info.main} !important`,
+  },
+  ".fake-link:hover,": {
+    color: `rgb(3 66 253) !important`,
   },
 };
 

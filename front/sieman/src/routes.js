@@ -56,6 +56,18 @@ import Productos from "pages/productos";
 import CreateProductos from "pages/productos/create";
 import EditProductos from "pages/productos/edit";
 
+//Ordenes de Compra pages
+import OrdenesCompra from "pages/ordenes-compra";
+import CreateOrdenCompra from "pages/ordenes-compra/create";
+
+//Compras pages
+import Compras from "pages/compras";
+import CreateCompras from "pages/compras/create";
+
+//Recepciones pages
+import Recepciones from "pages/recepciones";
+import CreateRecepcion from "pages/recepciones/create";
+
 // @mui icons
 import Icon from "@mui/material/Icon";
 
@@ -147,7 +159,7 @@ const routes = [
     icon: <Icon fontSize="small">shopping_cart</Icon>,
     route: "/ordenes-compra",
     roles: ["Administrador", "Auxiliar Contable", "Secretaria Administrativa"],
-    component: <Tables />,
+    component: <OrdenesCompra />,
   },
   {
     type: "collapse",
@@ -161,7 +173,7 @@ const routes = [
       "Secretaria Administrativa",
       "Operario de Alistamiento",
     ],
-    component: <Tables />,
+    component: <Compras />,
   },
   {
     type: "collapse",
@@ -175,7 +187,7 @@ const routes = [
       "Secretaria Administrativa",
       "Operario de Alistamiento",
     ],
-    component: <Tables />,
+    component: <Recepciones />,
   },
   //MODULO DE PRODUCCION
   {
@@ -343,6 +355,42 @@ const routes = [
     route: "/productos/crear",
     roles: ["Administrador", "Auxiliar Contable"],
     component: <CreateProductos />,
+  },
+  {
+    type: "route",
+    key: "creacion-orden-compra",
+    route: "/ordenes-compra/crear",
+    roles: [
+      "Administrador",
+      "Auxiliar Contable",
+      "Secretaria Administrativa",
+      "Operario de Alistamiento",
+    ],
+    component: <CreateOrdenCompra />,
+  },
+  {
+    type: "route",
+    key: "creacion-compra",
+    route: "/compras/crear/:id_orden",
+    roles: [
+      "Administrador",
+      "Auxiliar Contable",
+      "Secretaria Administrativa",
+      "Operario de Alistamiento",
+    ],
+    component: <CreateCompras />,
+  },
+  {
+    type: "route",
+    key: "creacion-recepcion",
+    route: "/recepciones/crear/:id_compra",
+    roles: [
+      "Administrador",
+      "Auxiliar Contable",
+      "Secretaria Administrativa",
+      "Operario de Alistamiento",
+    ],
+    component: <CreateRecepcion />,
   },
 ];
 
