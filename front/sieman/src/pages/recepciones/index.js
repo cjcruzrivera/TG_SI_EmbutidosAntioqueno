@@ -48,17 +48,27 @@ function Recepciones() {
   const [error, setError] = useState(null);
   const [isUpdated, setIsUpdated] = useState(false);
 
-  const handleAlistamiento = (registro) => {
+  const fetchBoodegas = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/bodegas/");
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleAlistamiento = async (registro) => {
     // se pide el valor de la bodega con un swal con un select
-    //TODO: Cargar Bodegas desde la API
+    const fetchedBodegas = await fetchBoodegas();
+    let bodegasOptions = {};
+    fetchedBodegas.forEach((bodega) => {
+      bodegasOptions[bodega.id] = bodega.nombre;
+    });
+
     Swal.fire({
       title: "Seleccione la bodega",
       input: "select",
-      inputOptions: {
-        1: "Bodega 1",
-        2: "Bodega 2",
-        3: "Bodega 3",
-      },
+      inputOptions: bodegasOptions,
       inputAttributes: {
         autocapitalize: "off",
       },
@@ -68,9 +78,9 @@ function Recepciones() {
       showLoaderOnConfirm: true,
       preConfirm: (bodega) => {
         return axios
-          .patch("http://localhost:8000/api/alistamiento/" + registro.id + "/", {
-            estado: "Recibida",
-            bodega: bodega,
+          .post("http://localhost:8000/api/registrar-alistamiento/", {
+            recepcion_id: registro.id,
+            bodega_id: bodega,
           })
           .then((response) => {
             setIsUpdated(true);

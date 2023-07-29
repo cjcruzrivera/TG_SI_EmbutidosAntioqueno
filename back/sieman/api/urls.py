@@ -2,7 +2,8 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
     LoginView, UsuarioViewSet, MateriaPrimaViewSet, ProductoViewSet, OrdenCompraViewSet, 
-    CompraViewSet, RecepcionViewSet, registrar_alistamiento, inventario_completo
+    CompraViewSet, RecepcionViewSet, registrar_alistamiento, inventario_completo,
+    BodegaViewSet
 )
 
 
@@ -13,6 +14,7 @@ router.register(r'productos', ProductoViewSet)
 router.register(r'ordenes-compra', OrdenCompraViewSet)
 router.register(r'compras', CompraViewSet)
 router.register(r'recepciones', RecepcionViewSet)
+router.register(r'bodegas', BodegaViewSet)
 
 urlpatterns = [
     # URLs de la API

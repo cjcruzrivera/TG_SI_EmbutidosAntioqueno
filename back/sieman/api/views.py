@@ -6,7 +6,7 @@ from .models import (
 from .serializers import (
     UsuarioSerializer, LoginSerializer, MateriaPrimaSerializer, ProductoSerializer, OrdenCompraSerializer, 
     OrdenCompraListSerializer, CompraSerializer, CompraListSerializer, RecepcionSerializer, RecepcionListSerializer,
-    
+    BodegaSerializer
 )
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
@@ -53,6 +53,10 @@ class MateriaPrimaViewSet(viewsets.ModelViewSet):
         instance.active = False
         instance.save()
         return Response({'message': 'La materia prima ha sido inhabilitada.'}, status=status.HTTP_204_NO_CONTENT)
+
+class BodegaViewSet(viewsets.ModelViewSet):
+    queryset = Bodega.objects.all()
+    serializer_class = BodegaSerializer
 
 class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.filter(active=True)
