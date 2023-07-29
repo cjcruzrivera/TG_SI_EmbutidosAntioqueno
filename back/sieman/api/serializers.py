@@ -107,16 +107,6 @@ class BodegaSerializer(serializers.ModelSerializer):
         model = Bodega
         fields = '__all__'
 
-class InventarioMPSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = InventarioMP
-        fields = '__all__'
-
-class InventarioPRSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = InventarioPR
-        fields = '__all__'
-
 class OrdenCompraSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrdenCompra
