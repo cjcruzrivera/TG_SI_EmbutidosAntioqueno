@@ -94,6 +94,21 @@ function CreateRecepcion() {
       newErrors.motivo_devolucion = "Debe ingresar el motivo de la devolución.";
     }
 
+    if (formData.estado === "Recibida") {
+      if (!formData.olor) {
+        newErrors.olor = "Debe seleccionar que el olor es correcto.";
+      }
+      if (!formData.color) {
+        newErrors.color = "Debe seleccionar que el color es correcto.";
+      }
+      if (!formData.operario) {
+        newErrors.operario = "Debe seleccionar que el operario es correcto.";
+      }
+      if (!formData.vehiculo) {
+        newErrors.vehiculo = "Debe seleccionar que el vehiculo es correcto.";
+      }
+    }
+
     //si estado es recibida, remover motivo de devolucion de formData
     if (formData.estado === "Recibida") {
       delete formData.motivo_devolucion;
@@ -198,7 +213,7 @@ function CreateRecepcion() {
                 </Grid>
               </MDBox>
               <MDBox pt={3} mb={1}>
-                <Grid p={3} container columnSpacing={1} rowSpacing={1}>
+                <Grid p={2} container columnSpacing={1} rowSpacing={1}>
                   <Grid item xs={12} sm={4} md={3}>
                     <Autocomplete
                       value={formData.estado}
@@ -214,78 +229,6 @@ function CreateRecepcion() {
                       )}
                     />
                     {errors.estado && <span className="formError">{errors.estado}</span>}
-                  </Grid>
-                  <Grid item xs={12} sm={1} md={1}>
-                    <FormControlLabel
-                      label="Olor - ok"
-                      labelPlacement="top"
-                      control={
-                        <Checkbox
-                          checked={formData.olor}
-                          onChange={(e) => {
-                            setFormData({
-                              ...formData,
-                              olor: e.target.checked,
-                            });
-                          }}
-                        />
-                      }
-                    />
-                    {errors.olor && <span className="formError">{errors.olor}</span>}
-                  </Grid>
-                  <Grid item xs={12} sm={1} md={1}>
-                    <FormControlLabel
-                      label="Color ok"
-                      labelPlacement="top"
-                      control={
-                        <Checkbox
-                          checked={formData.color}
-                          onChange={(e) => {
-                            setFormData({
-                              ...formData,
-                              color: e.target.checked,
-                            });
-                          }}
-                        />
-                      }
-                    />
-                    {errors.color && <span className="formError">{errors.color}</span>}
-                  </Grid>
-                  <Grid item xs={12} sm={1} md={1}>
-                    <FormControlLabel
-                      label="Operario ok"
-                      labelPlacement="top"
-                      control={
-                        <Checkbox
-                          checked={formData.operario}
-                          onChange={(e) => {
-                            setFormData({
-                              ...formData,
-                              operario: e.target.checked,
-                            });
-                          }}
-                        />
-                      }
-                    />
-                    {errors.operario && <span className="formError">{errors.operario}</span>}
-                  </Grid>
-                  <Grid item xs={12} sm={1} md={1}>
-                    <FormControlLabel
-                      label="Vehiculo ok"
-                      labelPlacement="top"
-                      control={
-                        <Checkbox
-                          checked={formData.vehiculo}
-                          onChange={(e) => {
-                            setFormData({
-                              ...formData,
-                              vehiculo: e.target.checked,
-                            });
-                          }}
-                        />
-                      }
-                    />
-                    {errors.vehiculo && <span className="formError">{errors.vehiculo}</span>}
                   </Grid>
                   <Grid item xs={12} sm={4} md={3}>
                     <MDInput
@@ -314,6 +257,102 @@ function CreateRecepcion() {
                     </Grid>
                   )}
                 </Grid>
+                <Grid p={1} container columnSpacing={1} rowSpacing={1}>
+                  <Grid item xs={12} sm={1} md={1}>
+                    <FormControlLabel
+                      label="Olor - ok"
+                      labelPlacement="top"
+                      control={
+                        <Checkbox
+                          checked={formData.olor}
+                          onChange={(e) => {
+                            setFormData({
+                              ...formData,
+                              olor: e.target.checked,
+                            });
+                          }}
+                        />
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={1} md={1}>
+                    <FormControlLabel
+                      label="Color ok"
+                      labelPlacement="top"
+                      control={
+                        <Checkbox
+                          checked={formData.color}
+                          onChange={(e) => {
+                            setFormData({
+                              ...formData,
+                              color: e.target.checked,
+                            });
+                          }}
+                        />
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={1} md={1}>
+                    <FormControlLabel
+                      label="Operario ok"
+                      labelPlacement="top"
+                      control={
+                        <Checkbox
+                          checked={formData.operario}
+                          onChange={(e) => {
+                            setFormData({
+                              ...formData,
+                              operario: e.target.checked,
+                            });
+                          }}
+                        />
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={1} md={1}>
+                    <FormControlLabel
+                      label="Vehiculo ok"
+                      labelPlacement="top"
+                      control={
+                        <Checkbox
+                          checked={formData.vehiculo}
+                          onChange={(e) => {
+                            setFormData({
+                              ...formData,
+                              vehiculo: e.target.checked,
+                            });
+                          }}
+                        />
+                      }
+                    />
+                  </Grid>
+                </Grid>
+                {(errors.olor || errors.color || errors.operario || errors.vehiculo) && (
+                  <MDBox pt={0} mb={1}>
+                    <Grid pl={3} pt={0} container columnSpacing={1} rowSpacing={4}>
+                      {errors.olor && (
+                        <Grid p={0} item xs={12} sm={12} md={12}>
+                          <span className="formError">{errors.olor}</span>
+                        </Grid>
+                      )}
+                      {errors.color && (
+                        <Grid p={0} item xs={12} sm={12} md={12}>
+                          <span className="formError">{errors.color}</span>
+                        </Grid>
+                      )}
+                      {errors.operario && (
+                        <Grid item xs={12} sm={12} md={12}>
+                          <span className="formError">{errors.operario}</span>
+                        </Grid>
+                      )}
+                      {errors.vehiculo && (
+                        <Grid item xs={12} sm={12} md={12}>
+                          <span className="formError">{errors.vehiculo}</span>
+                        </Grid>
+                      )}
+                    </Grid>
+                  </MDBox>
+                )}
               </MDBox>
             </Card>
           </Grid>
