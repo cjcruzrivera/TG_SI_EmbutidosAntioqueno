@@ -68,6 +68,10 @@ import CreateCompras from "pages/compras/create";
 import Recepciones from "pages/recepciones";
 import CreateRecepcion from "pages/recepciones/create";
 
+//Ordenes de Trabajo Pages
+import OrdenesTrabajo from "pages/ordenes-trabajo";
+import CreateOrdenTrabajo from "pages/ordenes-trabajo/create";
+
 //Reportes pages
 import Inventario from "pages/reportes/inventario";
 
@@ -211,7 +215,7 @@ const routes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/ordenes-trabajo",
     roles: ["Administrador", "Operario de Produccion", "Secretaria Administrativa"],
-    component: <Tables />,
+    component: <OrdenesTrabajo />,
   },
   {
     type: "collapse",
@@ -394,6 +398,13 @@ const routes = [
       "Operario de Alistamiento",
     ],
     component: <CreateRecepcion />,
+  },
+  {
+    type: "route",
+    key: "creacion-orden-trabajo",
+    route: "/ordenes-trabajo/crear",
+    roles: ["Administrador", "Operario de produccion"],
+    component: <CreateOrdenTrabajo />,
   },
 ];
 
