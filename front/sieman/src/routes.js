@@ -68,9 +68,10 @@ import CreateCompras from "pages/compras/create";
 import Recepciones from "pages/recepciones";
 import CreateRecepcion from "pages/recepciones/create";
 
-//Ordenes de Trabajo Pages
+//Modulo de Produccion Pages
 import OrdenesTrabajo from "pages/ordenes-trabajo";
 import CreateOrdenTrabajo from "pages/ordenes-trabajo/create";
+import Producciones from "pages/producciones";
 
 //Reportes pages
 import Inventario from "pages/reportes/inventario";
@@ -223,13 +224,8 @@ const routes = [
     key: "producciones",
     icon: <Icon fontSize="small">engineering</Icon>,
     route: "/producciones",
-    roles: [
-      "Administrador",
-      "Operario de Produccion",
-      "Secretaria Administrativa",
-      "Operario de Empaque",
-    ],
-    component: <Tables />,
+    roles: ["Administrador", "Operario de Produccion", "Secretaria Administrativa"],
+    component: <Producciones />,
   },
   //MODULO DE VENTAS
   {
@@ -295,7 +291,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Reporte de Ventas",
+    name: "Ventas por Producto",
     key: "reporte-ventas",
     icon: <Icon fontSize="small">bar_chart</Icon>,
     route: "/reporte-ventas",
@@ -304,7 +300,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Reporte de Producciones",
+    name: "Producciones",
     key: "reporte-producciones",
     icon: <Icon fontSize="small">trending_up</Icon>,
     route: "/reporte-producciones",
