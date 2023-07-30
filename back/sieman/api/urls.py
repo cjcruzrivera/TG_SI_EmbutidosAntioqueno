@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     LoginView, UsuarioViewSet, MateriaPrimaViewSet, ProductoViewSet, OrdenCompraViewSet, 
     CompraViewSet, RecepcionViewSet, registrar_alistamiento, inventario_completo,
-    BodegaViewSet
+    BodegaViewSet, OrdenTrabajoViewSet, ProduccionViewSet
 )
 
 
@@ -15,6 +15,8 @@ router.register(r'ordenes-compra', OrdenCompraViewSet)
 router.register(r'compras', CompraViewSet)
 router.register(r'recepciones', RecepcionViewSet)
 router.register(r'bodegas', BodegaViewSet)
+router.register(r'ordenes-trabajo', OrdenTrabajoViewSet)
+router.register(r'producciones', ProduccionViewSet)
 
 urlpatterns = [
     # URLs de la API

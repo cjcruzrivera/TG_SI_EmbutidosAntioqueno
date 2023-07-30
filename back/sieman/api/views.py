@@ -1,18 +1,18 @@
 from rest_framework import status
 from .models import (
     Usuario, MateriaPrima, Producto, ComposicionPR, Compra, OrdenCompra, Recepcion, InventarioMP, Bodega,
-    InventarioPR
+    InventarioPR, OrdenTrabajo, Produccion
 )
 from .serializers import (
     UsuarioSerializer, LoginSerializer, MateriaPrimaSerializer, ProductoSerializer, OrdenCompraSerializer, 
     OrdenCompraListSerializer, CompraSerializer, CompraListSerializer, RecepcionSerializer, RecepcionListSerializer,
-    BodegaSerializer
+    BodegaSerializer, OrdenTrabajoSerializer, OrdenTrabajoListSerializer, ProduccionListSerializer, ProduccionSerializer
 )
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import viewsets
-from django.db.models import F, Value, CharField
+from django.db.models import F, Value, CharField, Sum
 
 class LoginView(APIView):
     def post(self, request):
@@ -244,3 +244,149 @@ def registrar_alistamiento(request):
             return Response({"detail": "La bodega con el ID proporcionado no existe."}, status=status.HTTP_404_NOT_FOUND)
 
     return Response({"detail": "Método no permitido."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+class OrdenTrabajoViewSet(viewsets.ModelViewSet):
+    queryset = OrdenTrabajo.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        producto_id = serializer.validated_data['producto'].id
+        cantidad_productos = serializer.validated_data['cantidad']
+
+        composicion = ComposicionPR.objects.filter(id_prod=producto_id)
+
+        for item in composicion:
+            materia_prima = item.id_mp
+            cantidad_requerida = item.cantidad * cantidad_productos
+
+            inventario = InventarioMP.objects.filter(
+                materia_prima=materia_prima,
+                estado_mp='Lista',
+                cantidad__gte=cantidad_requerida,
+            ).first()
+
+            if not inventario:
+                return Response(
+                    {"detail": f"La materia prima '{materia_prima.nombre}' no está disponible en el inventario con cantidad necesaria (x{cantidad_requerida})."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return OrdenTrabajoListSerializer
+        else:
+            return OrdenTrabajoSerializer
+
+class ProduccionViewSet(viewsets.ModelViewSet):
+    queryset = Produccion.objects.all()
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+
+        if 'estado' in self.request.data:
+            estado_nuevo = self.request.data['estado']
+
+            if estado_nuevo == 'Cocinado':
+                orden_trabajo = instance.orden
+
+                productos_en_proceso = InventarioPR.objects.filter(
+                    producto=orden_trabajo.producto,
+                    estado_prod='En proceso'
+                ).first()
+
+                productos_en_proceso.cantidad -= orden_trabajo.cantidad
+                productos_en_proceso.save()
+
+                productos_cocinados, created = InventarioPR.objects.get_or_create(
+                    producto=orden_trabajo.producto,
+                    estado_prod='Cocinado',
+                    defaults={'cantidad': orden_trabajo.cantidad}
+                )
+
+                if not created:
+                    productos_cocinados.cantidad += orden_trabajo.cantidad
+                    productos_cocinados.save()
+
+            elif estado_nuevo == 'Finalizado':
+                orden_trabajo = instance.orden
+                print(orden_trabajo.producto)
+                productos_en_proceso = InventarioPR.objects.filter(
+                    producto=orden_trabajo.producto,
+                    estado_prod='Cocinado'
+                ).first()
+
+                productos_en_proceso.cantidad -= orden_trabajo.cantidad
+                productos_en_proceso.save()
+
+                productos_cocinados, created = InventarioPR.objects.get_or_create(
+                    producto=orden_trabajo.producto,
+                    estado_prod='Listo para venta',
+                    defaults={'cantidad': orden_trabajo.cantidad}
+                )
+
+                if not created:
+                    productos_cocinados.cantidad += orden_trabajo.cantidad
+                    productos_cocinados.save()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        producto_id = serializer.validated_data['orden'].producto.id
+        cantidad_productos = serializer.validated_data['orden'].cantidad
+
+        composicion = ComposicionPR.objects.filter(id_prod=producto_id)
+
+        for item in composicion:
+            materia_prima = item.id_mp
+            cantidad_requerida = item.cantidad * cantidad_productos
+
+            inventario = InventarioMP.objects.filter(
+                materia_prima=materia_prima,
+                estado_mp='Lista',
+                cantidad__gte=cantidad_requerida,
+            ).first()
+
+            if not inventario:
+                return Response(
+                    {"detail": f"La materia prima '{materia_prima.nombre}' no está disponible en el inventario con cantidad necesaria (x{cantidad_requerida})."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            else:
+                inventario.cantidad -= cantidad_requerida
+                inventario.save()
+                total_materia_prima = InventarioMP.objects.filter(
+                    materia_prima=materia_prima
+                ).values('materia_prima').annotate(Sum('cantidad'))
+                if total_materia_prima[0]['cantidad__sum'] < materia_prima.stock_minimo:
+                    OrdenCompra.objects.create(
+                        usuario=None,
+                        cantidad=materia_prima.stock_minimo - total_materia_prima[0]['cantidad__sum'],
+                        materia_prima=materia_prima
+                    )
+                inventario_produccion, created = InventarioPR.objects.get_or_create(
+                    bodega=None,
+                    producto=item.id_prod,
+                    estado_prod='En proceso',
+                    defaults={'cantidad': cantidad_productos}
+                )
+
+                if not created:
+                    inventario_produccion.cantidad += cantidad_productos
+                    inventario_produccion.save()
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return ProduccionListSerializer
+        else:
+            return ProduccionSerializer

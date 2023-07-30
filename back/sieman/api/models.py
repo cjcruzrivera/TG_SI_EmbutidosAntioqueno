@@ -131,7 +131,7 @@ class Produccion(models.Model):
     orden = models.ForeignKey(OrdenTrabajo, on_delete=models.CASCADE)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     fecha = models.DateTimeField(auto_now_add=True)
-    estado = models.CharField(max_length=50)
+    estado = models.CharField(max_length=50, default='En Proceso')
 
 class Remision(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)

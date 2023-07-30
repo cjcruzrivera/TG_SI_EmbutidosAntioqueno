@@ -139,10 +139,18 @@ class OrdenTrabajoSerializer(serializers.ModelSerializer):
         model = OrdenTrabajo
         fields = '__all__'
 
+class OrdenTrabajoListSerializer(OrdenTrabajoSerializer):
+    producto = ProductoSerializer()  
+    usuario = UsuarioSerializer()
+
 class ProduccionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Produccion
         fields = '__all__'
+
+class ProduccionListSerializer(ProduccionSerializer):
+    orden = OrdenTrabajoListSerializer()  
+    usuario = UsuarioSerializer()
 
 class RemisionSerializer(serializers.ModelSerializer):
     class Meta:
