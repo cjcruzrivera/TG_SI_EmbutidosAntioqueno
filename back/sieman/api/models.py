@@ -71,6 +71,22 @@ class Producto(models.Model):
     peso = models.IntegerField(null=True)
     active = models.BooleanField(default=True)
 
+    def validate_materias(self, cantidad_productos=1):
+        composicion = ComposicionPR.objects.filter(id_prod=self.id)
+        errors = []
+        for item in composicion:
+            materia_prima = item.id_mp
+            cantidad_requerida = item.cantidad * cantidad_productos
+
+            inventario = InventarioMP.objects.filter(
+                materia_prima=materia_prima,
+                estado_mp='Lista',
+                cantidad__gte=cantidad_requerida,
+            ).first()
+            if not inventario:
+                errors.append(f"La materia prima '{materia_prima.nombre}' no está disponible en el inventario con la cantidad necesaria (x{cantidad_requerida}).")
+        return errors
+
 class Bodega(models.Model):
     nombre = models.CharField(max_length=100)
 

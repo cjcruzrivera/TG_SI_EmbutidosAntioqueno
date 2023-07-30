@@ -252,24 +252,9 @@ class OrdenTrabajoViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        producto_id = serializer.validated_data['producto'].id
+        producto = serializer.validated_data['producto']
         cantidad_productos = serializer.validated_data['cantidad']
-
-        composicion = ComposicionPR.objects.filter(id_prod=producto_id)
-
-        errors = []
-        for item in composicion:
-            materia_prima = item.id_mp
-            cantidad_requerida = item.cantidad * cantidad_productos
-
-            inventario = InventarioMP.objects.filter(
-                materia_prima=materia_prima,
-                estado_mp='Lista',
-                cantidad__gte=cantidad_requerida,
-            ).first()
-            if not inventario:
-                errors.append(f"La materia prima '{materia_prima.nombre}' no está disponible en el inventario con la cantidad necesaria (x{cantidad_requerida}).")
-
+        errors = producto.validate_materias(cantidad_productos=cantidad_productos)
         if errors:        
             return Response(
                     {"detail": errors},
@@ -374,6 +359,13 @@ class ProduccionViewSet(viewsets.ModelViewSet):
         producto_id = orden.producto.id
         cantidad_productos = orden.cantidad
         
+        errors = orden.producto.validate_materias(cantidad_productos=cantidad_productos)
+        if errors:
+            return Response(
+                    {"detail": errors},
+                    status=status.HTTP_400_BAD_REQUEST
+             )
+
         composicion = ComposicionPR.objects.filter(id_prod=producto_id)
 
         for item in composicion:
@@ -386,33 +378,29 @@ class ProduccionViewSet(viewsets.ModelViewSet):
                 cantidad__gte=cantidad_requerida,
             ).first()
 
-            if not inventario:
-                return Response(
-                    {"detail": f"La materia prima '{materia_prima.nombre}' no está disponible en el inventario con cantidad necesaria (x{cantidad_requerida})."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            else:
-                inventario.cantidad -= cantidad_requerida
-                inventario.save()
-                total_materia_prima = InventarioMP.objects.filter(
+            inventario.cantidad -= cantidad_requerida
+            inventario.save()
+            total_materia_prima = InventarioMP.objects.filter(
+                materia_prima=materia_prima
+            ).values('materia_prima').annotate(Sum('cantidad'))
+            #Creacion de Orden de compra cuando la materia prima baja de stock minimo
+            if total_materia_prima[0]['cantidad__sum'] < materia_prima.stock_minimo:
+                OrdenCompra.objects.create(
+                    usuario=None,
+                    cantidad=materia_prima.stock_minimo - total_materia_prima[0]['cantidad__sum'],
                     materia_prima=materia_prima
-                ).values('materia_prima').annotate(Sum('cantidad'))
-                if total_materia_prima[0]['cantidad__sum'] < materia_prima.stock_minimo:
-                    OrdenCompra.objects.create(
-                        usuario=None,
-                        cantidad=materia_prima.stock_minimo - total_materia_prima[0]['cantidad__sum'],
-                        materia_prima=materia_prima
-                    )
-                inventario_produccion, created = InventarioPR.objects.get_or_create(
-                    bodega=None,
-                    producto=item.id_prod,
-                    estado_prod='En proceso',
-                    defaults={'cantidad': cantidad_productos}
                 )
 
-                if not created:
-                    inventario_produccion.cantidad += cantidad_productos
-                    inventario_produccion.save()
+        inventario_produccion, created = InventarioPR.objects.get_or_create(
+            bodega=None,
+            producto=item.id_prod,
+            estado_prod='En proceso',
+            defaults={'cantidad': cantidad_productos}
+        )
+
+        if not created:
+            inventario_produccion.cantidad += cantidad_productos
+            inventario_produccion.save()
 
         orden.estado = 'En producción'
         orden.save()
