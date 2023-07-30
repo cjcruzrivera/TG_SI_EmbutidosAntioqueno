@@ -4,7 +4,7 @@ from .views import (
     LoginView, UsuarioViewSet, MateriaPrimaViewSet, ProductoViewSet, OrdenCompraViewSet, 
     CompraViewSet, RecepcionViewSet, registrar_alistamiento, inventario_completo,
     BodegaViewSet, OrdenTrabajoViewSet, ProduccionViewSet, InventarioPrViewSet,
-    RemisionViewSet, VentaViewSet
+    RemisionViewSet, VentaViewSet, reporte_producciones, reporte_ventas
 )
 
 
@@ -27,5 +27,7 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('registrar-alistamiento/', registrar_alistamiento, name='registrar-alistamiento'),
     path('inventario/', inventario_completo, name='inventario' ),
+    path('reporte/producciones/', reporte_producciones, name='reporte_producciones' ),
+    path('reporte/ventas/', reporte_ventas, name='reporte_ventas' ),
     path('', include(router.urls)),
 ]

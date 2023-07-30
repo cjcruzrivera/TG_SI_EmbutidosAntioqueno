@@ -15,7 +15,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import viewsets
 from django.db import transaction
-from django.db.models import F, Value, CharField, Sum
+from django.db.models import F, Value, CharField, Sum, Count
 
 class LoginView(APIView):
     def post(self, request):
@@ -476,7 +476,6 @@ class RemisionViewSet(viewsets.ModelViewSet):
         else:
             return RemisionSerializer
         
-
 class VentaViewSet(viewsets.ModelViewSet):
     queryset = Venta.objects.all()
 
@@ -543,3 +542,35 @@ class VentaViewSet(viewsets.ModelViewSet):
             return VentaListSerializer
         else:
             return VentaSerializer
+
+@api_view(['GET'])
+def reporte_producciones(request):
+    consulta = Produccion.objects.filter(estado='Finalizado').values(
+        mes=F('fecha__month'),
+        año=F('fecha__year'),
+        producto_nombre=F('orden__producto__nombre')
+    ).annotate(
+        cantidad_producida=Sum('orden__cantidad')
+    )
+
+    results = list(consulta)
+    return Response(results)
+
+@api_view(['GET'])
+def reporte_ventas(request):
+    consulta = Venta.objects.annotate(
+        mes=F('fecha__month'),
+        año=F('fecha__year'),
+        producto_nombre=F('remision__prodsremision__producto__nombre')
+    ).values(
+        'mes',
+        'año',
+        'producto_nombre'
+    ).annotate(
+        numero_ventas=Count('id'),
+        cantidad_vendida=Sum('remision__prodsremision__cantidad'),
+        total_vendido=Sum(F('remision__prodsremision__cantidad') * F('remision__prodsremision__precio_unitario'))
+    )
+
+    results = list(consulta)
+    return Response(results)
