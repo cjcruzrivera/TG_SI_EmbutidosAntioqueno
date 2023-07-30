@@ -16,15 +16,31 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
+import formatMoney from "utils/formatMoney";
 
-function Inventario() {
+const meses = {
+  1: "Enero",
+  2: "Febrero",
+  3: "Marzo",
+  4: "Abril",
+  5: "Mayo",
+  6: "Junio",
+  7: "Julio",
+  8: "Agosto",
+  9: "Septiembre",
+  10: "Octubre",
+  11: "Noviembre",
+  12: "Diciembre",
+};
+
+function ReporteVentas() {
   const columns = [
-    { Header: "bodega", accessor: "bodega__nombre", align: "left" },
-    { Header: "tipo", accessor: "tipo", align: "center" },
-    { Header: "nombre", accessor: "materia_prima__nombre", align: "center" },
-    { Header: "stock_minimo", accessor: "materia_prima__stock_minimo", align: "center" },
-    { Header: "cantidad", accessor: "cantidad", align: "center" },
-    { Header: "estado", accessor: "estado", align: "center" },
+    { Header: "mes", accessor: "mes", align: "center" },
+    { Header: "año", accessor: "año", align: "center" },
+    { Header: "producto", accessor: "producto_nombre", align: "center" },
+    { Header: "numero ventas", accessor: "numero_ventas", align: "center" },
+    { Header: "cantidad vendida", accessor: "cantidad_vendida", align: "center" },
+    { Header: "total vendido", accessor: "total_vendido", align: "center" },
   ];
 
   const [rows, setRows] = useState([]);
@@ -34,13 +50,12 @@ function Inventario() {
   useEffect(() => {
     const fetchDataFromAPI = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/inventario/");
+        const response = await axios.get("http://localhost:8000/api/reporte/ventas");
 
         let data = response.data;
         data.forEach((registro) => {
-          registro.bodega__nombre = registro.bodega__nombre
-            ? registro.bodega__nombre
-            : "No registra";
+          registro.total_vendido = formatMoney(registro.total_vendido);
+          registro.mes = meses[registro.mes];
         });
         setRows(data);
         setIsLoading(false);
@@ -73,7 +88,7 @@ function Inventario() {
                 justifyContent="space-between" /* Add justify content */
               >
                 <MDTypography variant="h6" color="white">
-                  Inventario por bodegas
+                  Ventas por Producto
                 </MDTypography>
               </MDBox>
               <MDBox pt={3} mb={6} pl={2}>
@@ -109,4 +124,4 @@ function Inventario() {
   );
 }
 
-export default Inventario;
+export default ReporteVentas;

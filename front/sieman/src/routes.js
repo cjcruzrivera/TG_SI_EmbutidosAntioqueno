@@ -75,6 +75,8 @@ import Producciones from "pages/producciones";
 
 //Reportes pages
 import Inventario from "pages/reportes/inventario";
+import ReporteProducciones from "pages/reportes/producciones";
+import ReporteVentas from "pages/reportes/ventas";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -291,30 +293,30 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Ventas por Producto",
-    key: "reporte-ventas",
-    icon: <Icon fontSize="small">bar_chart</Icon>,
-    route: "/reporte-ventas",
-    roles: ["Administrador", "Auxiliar Contable", "Operario de Ventas"],
-    component: <Tables />,
-  },
-  {
-    type: "collapse",
-    name: "Producciones",
-    key: "reporte-producciones",
-    icon: <Icon fontSize="small">trending_up</Icon>,
-    route: "/reporte-producciones",
-    roles: allRoles,
-    component: <Tables />,
-  },
-  {
-    type: "collapse",
     name: "Inventario",
     key: "inventario",
     icon: <Icon fontSize="small">inventory</Icon>,
     route: "/inventario",
     roles: allRoles,
     component: <Inventario />,
+  },
+  {
+    type: "collapse",
+    name: "Ventas por Producto",
+    key: "reporte-ventas",
+    icon: <Icon fontSize="small">bar_chart</Icon>,
+    route: "/reporte-ventas",
+    roles: ["Administrador", "Auxiliar Contable", "Operario de Ventas"],
+    component: <ReporteVentas />,
+  },
+  {
+    type: "collapse",
+    name: "Prods por Producto",
+    key: "reporte-producciones",
+    icon: <Icon fontSize="small">trending_up</Icon>,
+    route: "/reporte-producciones",
+    roles: ["Administrador", "Auxiliar Contable", "Operario de Produccion"],
+    component: <ReporteProducciones />,
   },
   // RUTAS SIN MENU, SOLO PARA ACCESO POR URL
   {
