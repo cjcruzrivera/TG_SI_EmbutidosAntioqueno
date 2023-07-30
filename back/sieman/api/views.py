@@ -1,17 +1,20 @@
 from rest_framework import status
 from .models import (
     Usuario, MateriaPrima, Producto, ComposicionPR, Compra, OrdenCompra, Recepcion, InventarioMP, Bodega,
-    InventarioPR, OrdenTrabajo, Produccion
+    InventarioPR, OrdenTrabajo, Produccion, Remision, Venta, ProdsRemision
 )
 from .serializers import (
     UsuarioSerializer, LoginSerializer, MateriaPrimaSerializer, ProductoSerializer, OrdenCompraSerializer, 
     OrdenCompraListSerializer, CompraSerializer, CompraListSerializer, RecepcionSerializer, RecepcionListSerializer,
-    BodegaSerializer, OrdenTrabajoSerializer, OrdenTrabajoListSerializer, ProduccionListSerializer, ProduccionSerializer
+    BodegaSerializer, OrdenTrabajoSerializer, OrdenTrabajoListSerializer, ProduccionListSerializer, ProduccionSerializer,
+    InventarioPRListSerializer, RemisionListSerializer, RemisionSerializer, ProdsRemisionSerializer, VentaListSerializer,
+    VentaSerializer
 )
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import viewsets
+from django.db import transaction
 from django.db.models import F, Value, CharField, Sum
 
 class LoginView(APIView):
@@ -324,6 +327,8 @@ class ProduccionViewSet(viewsets.ModelViewSet):
             
             #Registrando finalizacion
             elif estado_nuevo == 'Finalizado':
+
+                bodega = self.request.data['bodega_id']
                 orden_trabajo = instance.orden
                 orden_trabajo.estado = 'Finalizada'
                 orden_trabajo.save()
@@ -337,6 +342,7 @@ class ProduccionViewSet(viewsets.ModelViewSet):
 
                 productos_cocinados, created = InventarioPR.objects.get_or_create(
                     producto=orden_trabajo.producto,
+                    bodega=bodega,
                     estado_prod='Listo para venta',
                     defaults={'cantidad': orden_trabajo.cantidad}
                 )
@@ -413,3 +419,127 @@ class ProduccionViewSet(viewsets.ModelViewSet):
             return ProduccionListSerializer
         else:
             return ProduccionSerializer
+
+class InventarioPrViewSet(viewsets.ModelViewSet):
+    queryset = InventarioPR.objects.filter(
+        estado_prod='Listo para venta',
+        cantidad__gt=0
+    )
+    serializer_class = InventarioPRListSerializer
+
+class RemisionViewSet(viewsets.ModelViewSet):
+    queryset = Remision.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        with transaction.atomic():
+            try:
+                pedido_data = request.data.get('pedido', [])
+
+                # Validar si los productos están en stock
+                errors = []
+                for item in pedido_data:
+                    producto = Producto.objects.get(pk=item['producto'])
+                    inventario = InventarioPR.objects.filter(
+                        producto=producto,
+                        estado_prod='Listo para venta',
+                        cantidad__gte=item['cantidad'],
+                    ).first()
+
+                    if not inventario:
+                        errors.append(f"El producto '{producto.nombre}' no está disponible en el inventario con la cantidad necesaria (x{item['cantidad']}).")
+
+                if errors:
+                    raise Exception(errors)
+
+                serializer = self.get_serializer(data=request.data)
+                serializer.is_valid(raise_exception=True)
+                remision = serializer.save()
+
+                prods_remision_data = []
+                for item in pedido_data:
+                    item['remision'] = remision.id
+                    prods_remision_data.append(item)
+
+                prods_remision_serializer = ProdsRemisionSerializer(data=prods_remision_data, many=True)
+                prods_remision_serializer.is_valid(raise_exception=True)
+                prods_remision_serializer.save()
+
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            except Exception as e:
+                transaction.set_rollback(True)
+                return Response({"error": "Error al crear el objeto.", "detail": e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return RemisionListSerializer
+        else:
+            return RemisionSerializer
+        
+
+class VentaViewSet(viewsets.ModelViewSet):
+    queryset = Venta.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        with transaction.atomic():
+            try:
+                remision_id = request.data.get('remision')
+                remision = Remision.objects.get(pk=remision_id)
+
+                pedido_data = ProdsRemision.objects.filter(remision=remision)
+                errors = []
+                for item in pedido_data:
+                    producto_id = item.producto.id
+                    producto_name = item.producto.nombre
+                    inventario = InventarioPR.objects.filter(
+                        producto=producto_id,
+                        estado_prod='Listo para venta',
+                        cantidad__gte=item.cantidad,
+                    ).first()
+
+                    if not inventario:
+                        errors.append(f"El producto '{producto_name}' no está disponible en el inventario con la cantidad necesaria (x{item.cantidad}).")
+
+                if errors:
+                    raise Exception(errors)
+
+                serializer = self.get_serializer(data=request.data)
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+                remision.estado = 'Venta Realizada'
+                remision.save()
+
+                for item in pedido_data:
+                    producto = item.producto
+                    cantidad = item.cantidad
+                    inventario = InventarioPR.objects.filter(
+                        producto=producto,
+                        estado_prod='Listo para venta'
+                    ).first()
+                    inventario.cantidad -= cantidad
+                    inventario.save()
+
+                    total_productos = InventarioPR.objects.filter(
+                        producto=producto
+                    ).values('producto').annotate(Sum('cantidad'))
+
+                    # Creacion de Orden de trabajo cuando el producto baja de stock minimo
+                    if total_productos[0]['cantidad__sum'] < producto.stock_minimo:
+                        OrdenTrabajo.objects.create(
+                            usuario=None,
+                            cantidad=producto.stock_minimo - total_productos[0]['cantidad__sum'],
+                            producto=producto
+                        )
+
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            except Exception as e:
+                print(e)
+                transaction.set_rollback(True)
+                return Response({"detail": e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return VentaListSerializer
+        else:
+            return VentaSerializer

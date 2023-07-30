@@ -156,13 +156,39 @@ class RemisionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Remision
         fields = '__all__'
+    
+class RemisionListSerializer(RemisionSerializer):
+
+    usuario = UsuarioSerializer()
+    pedido = serializers.SerializerMethodField()
+
+    def get_pedido(self, instance):
+        productos = ProdsRemision.objects.filter(remision=instance)
+
+        productos_serializer = ProdsRemisionListSerializer(productos, many=True)
+
+        return productos_serializer.data
 
 class ProdsRemisionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProdsRemision
         fields = '__all__'
 
+class ProdsRemisionListSerializer(ProdsRemisionSerializer):
+    producto = ProductoSerializer()
+
 class VentaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Venta
+        fields = '__all__'
+
+class VentaListSerializer(VentaSerializer):
+    usuario = UsuarioSerializer()
+    remision = RemisionListSerializer()
+
+class InventarioPRListSerializer(serializers.ModelSerializer):
+    producto = ProductoSerializer()
+    bodega = BodegaSerializer()
+    class Meta:
+        model = InventarioPR
         fields = '__all__'

@@ -138,7 +138,7 @@ class Recepcion(models.Model):
 
 class OrdenTrabajo(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
     cantidad = models.IntegerField()
     estado = models.CharField(max_length=50, default='Pendiente')
@@ -151,8 +151,7 @@ class Produccion(models.Model):
 
 class Remision(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    nombre = models.CharField(max_length=100)
-    cliente = models.CharField(max_length=100, null=True)
+    nombre_cliente = models.CharField(max_length=100, null=True)
     fecha_generacion = models.DateTimeField(auto_now_add=True)
     fecha_entrega = models.DateField()
     tipo = models.CharField(max_length=50)
@@ -167,6 +166,7 @@ class ProdsRemision(models.Model):
 
 class Venta(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    id_remision = models.ForeignKey(Remision, on_delete=models.CASCADE)
+    remision = models.ForeignKey(Remision, on_delete=models.CASCADE)
     fecha = models.DateTimeField(auto_now_add=True)
     metodo_pago = models.CharField(max_length=50)
+
