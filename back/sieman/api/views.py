@@ -257,6 +257,7 @@ class OrdenTrabajoViewSet(viewsets.ModelViewSet):
 
         composicion = ComposicionPR.objects.filter(id_prod=producto_id)
 
+        errors = []
         for item in composicion:
             materia_prima = item.id_mp
             cantidad_requerida = item.cantidad * cantidad_productos
@@ -266,13 +267,14 @@ class OrdenTrabajoViewSet(viewsets.ModelViewSet):
                 estado_mp='Lista',
                 cantidad__gte=cantidad_requerida,
             ).first()
-
             if not inventario:
-                return Response(
-                    {"detail": f"La materia prima '{materia_prima.nombre}' no está disponible en el inventario con cantidad necesaria (x{cantidad_requerida})."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+                errors.append(f"La materia prima '{materia_prima.nombre}' no está disponible en el inventario con la cantidad necesaria (x{cantidad_requerida}).")
 
+        if errors:        
+            return Response(
+                    {"detail": errors},
+                    status=status.HTTP_400_BAD_REQUEST
+             )
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
@@ -291,10 +293,10 @@ class ProduccionViewSet(viewsets.ModelViewSet):
 
         if 'estado' in self.request.data:
             estado_nuevo = self.request.data['estado']
-
-            if estado_nuevo == 'Cocinado':
+            
+            #Registrando preparacion
+            if estado_nuevo == 'Preparado':
                 orden_trabajo = instance.orden
-
                 productos_en_proceso = InventarioPR.objects.filter(
                     producto=orden_trabajo.producto,
                     estado_prod='En proceso'
@@ -302,6 +304,28 @@ class ProduccionViewSet(viewsets.ModelViewSet):
 
                 productos_en_proceso.cantidad -= orden_trabajo.cantidad
                 productos_en_proceso.save()
+
+                productos_crudos, created = InventarioPR.objects.get_or_create(
+                    producto=orden_trabajo.producto,
+                    estado_prod='Crudo',
+                    defaults={'cantidad': orden_trabajo.cantidad}
+                )
+
+                if not created:
+                    productos_crudos.cantidad += orden_trabajo.cantidad
+                    productos_crudos.save()
+
+            #Registrando coccion
+            elif estado_nuevo == 'Cocinado':
+                orden_trabajo = instance.orden
+
+                productos_crudos = InventarioPR.objects.filter(
+                    producto=orden_trabajo.producto,
+                    estado_prod='Crudo'
+                ).first()
+
+                productos_crudos.cantidad -= orden_trabajo.cantidad
+                productos_crudos.save()
 
                 productos_cocinados, created = InventarioPR.objects.get_or_create(
                     producto=orden_trabajo.producto,
@@ -312,10 +336,12 @@ class ProduccionViewSet(viewsets.ModelViewSet):
                 if not created:
                     productos_cocinados.cantidad += orden_trabajo.cantidad
                     productos_cocinados.save()
-
+            
+            #Registrando finalizacion
             elif estado_nuevo == 'Finalizado':
                 orden_trabajo = instance.orden
-                print(orden_trabajo.producto)
+                orden_trabajo.estado = 'Finalizada'
+                orden_trabajo.save()
                 productos_en_proceso = InventarioPR.objects.filter(
                     producto=orden_trabajo.producto,
                     estado_prod='Cocinado'
@@ -338,9 +364,16 @@ class ProduccionViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        producto_id = serializer.validated_data['orden'].producto.id
-        cantidad_productos = serializer.validated_data['orden'].cantidad
-
+        orden = serializer.validated_data['orden']
+        if orden.estado != 'Aprobada':
+            return Response(
+                {"detail": f"La orden de trabajo con ID {orden.id} no está disponible para producción."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        producto_id = orden.producto.id
+        cantidad_productos = orden.cantidad
+        
         composicion = ComposicionPR.objects.filter(id_prod=producto_id)
 
         for item in composicion:
@@ -381,6 +414,8 @@ class ProduccionViewSet(viewsets.ModelViewSet):
                     inventario_produccion.cantidad += cantidad_productos
                     inventario_produccion.save()
 
+        orden.estado = 'En producción'
+        orden.save()
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
