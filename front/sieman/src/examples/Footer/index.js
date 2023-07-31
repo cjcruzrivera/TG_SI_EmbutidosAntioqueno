@@ -67,9 +67,11 @@ function Footer({ company, links }) {
           </MDTypography>
         </Link>
         para
-        <MDTypography variant="button" fontWeight="medium">
-          &nbsp;EMBUTIDOS ANTIOQUEÑO&nbsp;
-        </MDTypography>
+        <Link href={"https://www.instagram.com/embutidosantioqueno/"} target="_blank">
+          <MDTypography variant="button" fontWeight="medium">
+            &nbsp;EMBUTIDOS ANTIOQUEÑO&nbsp;
+          </MDTypography>
+        </Link>
       </MDBox>
       <MDBox
         component="ul"

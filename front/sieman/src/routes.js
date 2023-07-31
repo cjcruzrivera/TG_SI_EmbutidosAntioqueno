@@ -115,7 +115,7 @@ const routes = [
   {
     type: "title",
     key: "title-config",
-    title: "Configuracion",
+    title: "Configuración",
     roles: ["Administrador", "Auxiliar Contable"],
   },
   {
