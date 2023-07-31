@@ -14,7 +14,7 @@ import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import Loader from "components/Loader";
-import MateriasPrimasList from "components/MateriasPrimasList";
+import AmountList from "components/AmountList";
 
 // material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -79,7 +79,7 @@ function Productos() {
         data.forEach((registro) => {
           registro.precio = formatMoney(registro.precio);
           registro.peso = registro.peso + " gr";
-          registro.composicion = <MateriasPrimasList items={registro.composicion} />;
+          registro.composicion = <AmountList items={registro.composicion} />;
           let url = "/productos/editar/" + registro.id;
           registro.accion = (
             <div>
