@@ -73,6 +73,11 @@ import OrdenesTrabajo from "pages/ordenes-trabajo";
 import CreateOrdenTrabajo from "pages/ordenes-trabajo/create";
 import Producciones from "pages/producciones";
 
+//Modulo de Ventas Pages
+import Ventas from "pages/ventas";
+import Remisiones from "pages/remisiones";
+import CreateRemision from "pages/remisiones/create";
+
 //Reportes pages
 import Inventario from "pages/reportes/inventario";
 import ReporteProducciones from "pages/reportes/producciones";
@@ -263,7 +268,7 @@ const routes = [
       "Secretaria Administrativa",
       "Operario de Ventas",
     ],
-    component: <Tables />,
+    component: <Remisiones />,
   },
   {
     type: "collapse",
@@ -277,7 +282,7 @@ const routes = [
       "Secretaria Administrativa",
       "Operario de Ventas",
     ],
-    component: <Tables />,
+    component: <Ventas />,
   },
   //MODULO DE REPORTES
   {
@@ -403,6 +408,13 @@ const routes = [
     route: "/ordenes-trabajo/crear",
     roles: ["Administrador", "Operario de produccion"],
     component: <CreateOrdenTrabajo />,
+  },
+  {
+    type: "route",
+    key: "creacion-remision",
+    route: "/remisiones/crear",
+    roles: ["Administrador", "Auxiliar Contable", "Operario de venta"],
+    component: <CreateRemision />,
   },
 ];
 
