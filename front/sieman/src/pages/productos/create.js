@@ -93,7 +93,6 @@ function CreateProductos() {
     e.preventDefault();
     const newErrors = {};
     setErrors([]);
-    console.log(formData);
 
     if (!formData.nombre) newErrors.nombre = "El nombre del producto es obligatorio.";
     if (!formData.peso) newErrors.peso = "El peso del producto es obligatorio.";
@@ -278,7 +277,7 @@ function CreateProductos() {
                       </Grid>
                     ))}
                   </Grid>
-                  <Grid item xs={12} sm={6} md={4}>
+                  <Grid item xs={12} sm={8} md={6}>
                     <Autocomplete
                       value={newComposicion.materia_prima_id}
                       options={materiasPrimasOptions}
@@ -293,7 +292,7 @@ function CreateProductos() {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={4}>
+                  <Grid item xs={12} sm={4} md={6}>
                     <MDInput
                       type="number"
                       label="Cantidad"
