@@ -342,7 +342,7 @@ class ProduccionViewSet(viewsets.ModelViewSet):
 
                 productos_cocinados, created = InventarioPR.objects.get_or_create(
                     producto=orden_trabajo.producto,
-                    bodega=bodega,
+                    bodega_id=bodega,
                     estado_prod='Listo para venta',
                     defaults={'cantidad': orden_trabajo.cantidad}
                 )
