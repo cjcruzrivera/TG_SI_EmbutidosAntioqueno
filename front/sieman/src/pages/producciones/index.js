@@ -88,7 +88,7 @@ function Producciones() {
         return axios
           .patch("http://localhost:8000/api/producciones/" + registro.id + "/", {
             estado: "Finalizado",
-            bodega_id: bodega,
+            bodega_id: parseInt(bodega),
           })
           .then((response) => {
             setIsUpdated(true);
