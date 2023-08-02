@@ -16,6 +16,8 @@ from rest_framework.response import Response
 from rest_framework import viewsets
 from django.db import transaction
 from django.db.models import F, Value, CharField, Sum, Count
+from django.utils import timezone
+
 
 class LoginView(APIView):
     def post(self, request):
@@ -574,3 +576,149 @@ def reporte_ventas(request):
 
     results = list(consulta)
     return Response(results)
+
+@api_view(['POST'])
+def dashboards(request):
+    if request.method == 'POST':
+        data = request.data
+        methods = {
+            "dashboardVentasMes":dashboardVentasMes,
+            "dashboardComprasMes":dashboardComprasMes,
+            "dashboardVentasDia":dashboardVentasDia,
+            "dashboardProducciones":dashboardProducciones,
+            "dashboardOrdenesCompra":dashboardOrdenesCompra,
+            "dashboardOrdenesTrabajo":dashboardOrdenesTrabajo,
+            "dashboardRemisiones":dashboardRemisiones,
+            "dashboardComprasPendientes":dashboardComprasPendientes,
+        }
+        response = {}
+        for el in data['dashboards']:
+            if el in methods:
+                response[el] = methods[el]()
+            else:
+                return Response({"detail": "Método no permitido."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        return Response(response, status=status.HTTP_200_OK)
+        
+    return Response({"detail": "Método no permitido."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+def dashboardVentasMes():
+    today = timezone.now()
+    this_month_first_day = today.replace(day=1)
+
+    obj = Venta.objects.filter(
+        fecha__gte=this_month_first_day,
+        fecha__lt=today,
+    )
+
+    total_sales = obj.aggregate(total_sales=Sum('remision__total'))['total_sales'] or 0
+
+    total_sales_count = obj.count()
+
+    data = {
+        'total_ventas': total_sales,
+        'cantidad_ventas': total_sales_count,
+    }
+    return data
+
+def dashboardComprasMes():
+    today = timezone.now()
+    this_month_first_day = today.replace(day=1)
+
+    obj = Compra.objects.filter(
+        fecha__gte=this_month_first_day,
+        fecha__lt=today,
+    )
+
+    total_purchases = obj.aggregate(total_purchases=Sum('valor'))['total_purchases'] or 0
+
+    total_purchases_count = obj.count()
+
+    data = {
+        'total_compras': total_purchases,
+        'cantidad_compras': total_purchases_count,
+    }
+    return data
+
+def dashboardVentasDia():
+    today = timezone.now().date()
+
+    obj = Venta.objects.filter(
+        fecha__date=today,
+    )
+
+    total_sales_today = obj.aggregate(total_sales=Sum('remision__total'))['total_sales'] or 0
+
+    total_sales_count_today = obj.count()
+
+    data = {
+        'total_ventas_hoy': total_sales_today,
+        'cantidad_ventas_hoy': total_sales_count_today,
+    }
+    return data
+
+def dashboardProducciones():
+    count = Produccion.objects.exclude(estado='Finalizado').count()
+    return {
+        'producciones_en_curso': count,
+    }
+
+def dashboardOrdenesCompra():
+    data = OrdenCompra.objects.values('estado').annotate(count=Count('estado')).order_by()
+
+    result = {
+        'ordenes_pendientes': 0,
+        'ordenes_aprobadas': 0,
+    }
+    for item in data:
+        estado = item['estado']
+        count = item['count']
+        if estado == 'Pendiente':
+            result['ordenes_pendientes'] = count
+        elif estado == 'Aprobada':
+            result['ordenes_aprobadas'] = count
+    
+    return {
+        'ordenes_pendientes': result['ordenes_pendientes'],
+        'ordenes_totales': result['ordenes_pendientes'] + result['ordenes_aprobadas'],
+    }
+
+def dashboardOrdenesTrabajo():
+    data = OrdenTrabajo.objects.values('estado').annotate(count=Count('estado')).order_by()
+
+    result = {
+        'ordenes_pendientes': 0,
+        'ordenes_aprobadas': 0,
+        'ordenes_en_produccion': 0,
+    }
+    for item in data:
+        estado = item['estado']
+        count = item['count']
+        if estado == 'Pendiente':
+            result['ordenes_pendientes'] = count
+        elif estado == 'Aprobada':
+            result['ordenes_aprobadas'] = count
+        elif estado == 'En producción':
+            result['ordenes_en_produccion'] = count
+    
+    return {
+        'ordenes_pendientes': result['ordenes_pendientes'],
+        'ordenes_totales': result['ordenes_pendientes'] + result['ordenes_aprobadas'] + result['ordenes_en_produccion'],
+    }
+
+def dashboardRemisiones():
+    today = timezone.now().date()
+
+    remissions_today = Remision.objects.filter(fecha_generacion__date=today).count()
+    pending_remissions_total = Remision.objects.filter(estado='Pendiente').count()
+
+    data = {
+        'remisiones_hoy': remissions_today,
+        'remisiones_pendientes_totales': pending_remissions_total,
+    }
+    return data
+
+def dashboardComprasPendientes():
+    count = Compra.objects.filter(estado='Realizada').count()
+    return {
+        'compras_pendientes': count,
+    }
