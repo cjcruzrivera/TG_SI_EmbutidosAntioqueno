@@ -42,7 +42,7 @@ function CreateRemisiones() {
     "-" +
     (parseInt(todayStringArr[1]) < 10 ? "0" + todayStringArr[1] : todayStringArr[1]) +
     "-" +
-    todayStringArr[0];
+    (parseInt(todayStringArr[0]) < 10 ? "0" + todayStringArr[0] : todayStringArr[0]);
   const [formData, setFormData] = useState({
     usuario: user.id,
     nombre_cliente: "",

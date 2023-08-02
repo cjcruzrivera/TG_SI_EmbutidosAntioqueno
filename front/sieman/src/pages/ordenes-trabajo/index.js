@@ -22,9 +22,13 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 import formatDate from "utils/formatDate";
+import { useMaterialUIController } from "context";
 
 function OrdenesTrabajo() {
   let navigate = useNavigate();
+
+  const [controller, dispatch] = useMaterialUIController();
+  const user = controller.user;
 
   const columns = [
     { Header: "", accessor: "accion", width: "5%", align: "center" },
@@ -66,7 +70,7 @@ function OrdenesTrabajo() {
     try {
       await axios.post("http://localhost:8000/api/producciones/", {
         orden: orden.id,
-        usuario: orden.usuario.id,
+        usuario: user.id,
       });
       Swal.fire("¡Registrado!", "La producción ha sido registrada correctamente.", "success").then(
         (result) => {
