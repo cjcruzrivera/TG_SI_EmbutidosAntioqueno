@@ -99,7 +99,7 @@ function Dashboard() {
                     title="Ventas del Día"
                     count={formatMoney(data.dashboardVentasDia.total_ventas_hoy)}
                     percentage={{
-                      color: "success",
+                      color: "info",
                       amount: data.dashboardVentasDia.cantidad_ventas_hoy,
                       label: " ventas registradas",
                     }}
