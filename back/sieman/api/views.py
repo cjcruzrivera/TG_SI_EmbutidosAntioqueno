@@ -17,6 +17,7 @@ from rest_framework import viewsets
 from django.db import transaction
 from django.db.models import F, Value, CharField, Sum, Count
 from django.utils import timezone
+import pytz
 
 
 class LoginView(APIView):
@@ -602,14 +603,17 @@ def dashboards(request):
     return Response({"detail": "Método no permitido."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 def dashboardVentasMes():
-    today = timezone.now()
+    tz = pytz.timezone('America/Bogota')
+
+    # Obtener la fecha y hora actual en la zona horaria de Colombia
+    today = timezone.now().astimezone(tz)
     this_month_first_day = today.replace(day=1)
 
     obj = Venta.objects.filter(
         fecha__gte=this_month_first_day,
         fecha__lt=today,
     )
-
+    print(obj)
     total_sales = obj.aggregate(total_sales=Sum('remision__total'))['total_sales'] or 0
 
     total_sales_count = obj.count()
@@ -621,7 +625,10 @@ def dashboardVentasMes():
     return data
 
 def dashboardComprasMes():
-    today = timezone.now()
+    tz = pytz.timezone('America/Bogota')
+
+    # Obtener la fecha y hora actual en la zona horaria de Colombia
+    today = timezone.now().astimezone(tz)
     this_month_first_day = today.replace(day=1)
 
     obj = Compra.objects.filter(
@@ -640,14 +647,23 @@ def dashboardComprasMes():
     return data
 
 def dashboardVentasDia():
-    today = timezone.now().date()
+    # Obtener la zona horaria de Colombia
+    tz = pytz.timezone('America/Bogota')
 
+    # Obtener la fecha actual en la zona horaria de Colombia
+    now_colombia = timezone.now().astimezone(tz)
+
+    # Obtener el primer y último instante del día en la zona horaria de Colombia
+    today_start = now_colombia.replace(hour=0, minute=0, second=0, microsecond=0)
+    today_end = now_colombia.replace(hour=23, minute=59, second=59, microsecond=999999)
+
+    # Convertir las fechas a la zona horaria de Colombia antes de realizar la consulta en la base de datos
     obj = Venta.objects.filter(
-        fecha__date=today,
+        fecha__gte=today_start,
+        fecha__lte=today_end,
     )
 
     total_sales_today = obj.aggregate(total_sales=Sum('remision__total'))['total_sales'] or 0
-
     total_sales_count_today = obj.count()
 
     data = {
@@ -706,10 +722,20 @@ def dashboardOrdenesTrabajo():
     }
 
 def dashboardRemisiones():
-    today = timezone.now().date()
+    # Obtener la zona horaria de Colombia
+    tz = pytz.timezone('America/Bogota')
 
-    remissions_today = Remision.objects.filter(fecha_generacion__date=today).count()
+    # Obtener la fecha y hora actual en la zona horaria de Colombia
+    now_colombia = timezone.now().astimezone(tz)
+
+    # Obtener el primer y último instante del día en la zona horaria de Colombia
+    today_start = now_colombia.replace(hour=0, minute=0, second=0, microsecond=0)
+    today_end = now_colombia.replace(hour=23, minute=59, second=59, microsecond=999999)
+
+    # Convertir las fechas a la zona horaria de Colombia antes de realizar las consultas en la base de datos
+    remissions_today = Remision.objects.filter(fecha_generacion__range=(today_start, today_end)).count()
     pending_remissions_total = Remision.objects.filter(estado='Pendiente').count()
+
 
     data = {
         'remisiones_hoy': remissions_today,
