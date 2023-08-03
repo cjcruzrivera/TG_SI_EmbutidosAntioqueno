@@ -658,10 +658,7 @@ def dashboardVentasDia():
     today_end = now_colombia.replace(hour=23, minute=59, second=59, microsecond=999999)
 
     # Convertir las fechas a la zona horaria de Colombia antes de realizar la consulta en la base de datos
-    obj = Venta.objects.filter(
-        fecha__gte=today_start,
-        fecha__lte=today_end,
-    )
+    obj = Venta.objects.filter(fecha__range=(today_start, today_end))
 
     total_sales_today = obj.aggregate(total_sales=Sum('remision__total'))['total_sales'] or 0
     total_sales_count_today = obj.count()
