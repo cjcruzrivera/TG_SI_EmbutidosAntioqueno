@@ -3,3 +3,4 @@ back/venv
 back/sieman/api/migrations
 front/node_modules/
 .vscode/
+*.env
