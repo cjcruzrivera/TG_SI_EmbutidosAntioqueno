@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+TIME_ZONE = 'America/Bogota'
 
 # Application definition
 
@@ -92,7 +93,7 @@ WSGI_APPLICATION = 'sieman.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sieman',
+        'NAME': 'sieman2',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': 'localhost',  # usually 'localhost' for local development

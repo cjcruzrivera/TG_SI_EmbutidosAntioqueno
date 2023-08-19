@@ -608,6 +608,9 @@ def dashboardVentasMes():
     # Obtener la fecha y hora actual en la zona horaria de Colombia
     today = timezone.now().astimezone(tz)
     this_month_first_day = today.replace(day=1)
+    
+    this_month_first_day = this_month_first_day.replace(hour=0, minute=0, second=0, microsecond=0)
+    today = today.replace(hour=23, minute=59, second=59, microsecond=999999)
 
     obj = Venta.objects.filter(
         fecha__gte=this_month_first_day,
@@ -630,6 +633,9 @@ def dashboardComprasMes():
     # Obtener la fecha y hora actual en la zona horaria de Colombia
     today = timezone.now().astimezone(tz)
     this_month_first_day = today.replace(day=1)
+
+    this_month_first_day = this_month_first_day.replace(hour=0, minute=0, second=0, microsecond=0)
+    today = today.replace(hour=23, minute=59, second=59, microsecond=999999)
 
     obj = Compra.objects.filter(
         fecha__gte=this_month_first_day,

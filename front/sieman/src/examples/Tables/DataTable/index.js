@@ -247,7 +247,7 @@ function DataTable({
                 <Icon sx={{ fontWeight: "bold" }}>chevron_left</Icon>
               </MDPagination>
             )}
-            {renderPagination.length > 6 ? (
+            {renderPagination.length > 10 ? (
               <MDBox width="5rem" mx={1}>
                 <MDInput
                   inputProps={{ type: "number", min: 1, max: customizedPageOptions.length }}

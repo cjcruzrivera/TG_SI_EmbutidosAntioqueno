@@ -84,7 +84,7 @@ function ReporteProducciones() {
                 justifyContent="space-between" /* Add justify content */
               >
                 <MDTypography variant="h6" color="white">
-                  REPORTE DE PRODUCCIONES
+                  Producciones por producto
                 </MDTypography>
               </MDBox>
               <MDBox pt={3} mb={6} pl={2}>
