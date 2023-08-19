@@ -146,7 +146,7 @@ function CreateOrdenCompra() {
                       onChange={(event, newValue) =>
                         setFormData({
                           ...formData,
-                          materia_prima: newValue.id,
+                          materia_prima: newValue?.id,
                         })
                       }
                       renderInput={(params) => (
